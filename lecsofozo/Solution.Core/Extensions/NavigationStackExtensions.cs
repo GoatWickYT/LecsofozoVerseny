@@ -2,12 +2,12 @@
 
 public static class NavigationStackExtensions
 {
-  public static void ClearNavigationStack(this Shell curentShell)
-  {
-    var stack = curentShell.Navigation.NavigationStack.ToArray();
-    for (int i = stack.Length - 1; i > 0; i--)
+    public static void ClearNavigationStack(this Shell currentShell)
     {
-      curentShell.Navigation.RemovePage(stack[i]);
+        var stack = currentShell.Navigation.NavigationStack.ToArray();
+        for (int i = stack.Length - 1; i > 0; i--)
+        {
+            currentShell.Navigation.RemovePage(stack[i]);
+        }
     }
-  }
 }

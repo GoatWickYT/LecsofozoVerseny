@@ -4,7 +4,7 @@ public class MaxValueRule<T>(int maxValue) : IValidationRule<T>
 {
     public string ValidationMessage { get; set; } = $"Value can't be larger then {maxValue}.";
 
-    public bool Check(T value)
+    public bool Check(object value)
     {
         if (!int.TryParse(value?.ToString(), out int data))
         {

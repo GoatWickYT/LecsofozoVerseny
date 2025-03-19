@@ -5,22 +5,17 @@ public static class ConfigureAppVariables
 	public static MauiAppBuilder UseAppConfigurations(this MauiAppBuilder builder)
 	{
 #if DEBUG
-        var file = "Resources.Raw.appSettings.Development.json";
+        var file = "appSettings.Development.json";
 #else
-        var file = "Resources.Raw.appSettings.Production.json";
+        var file = "connectionString.Production.json";
 #endif
+        var stream = new MemoryStream(File.ReadAllBytes($"{file}"));
 
+        var config = new ConfigurationBuilder()
+                    .AddJsonStream(stream)
+                    .Build();
 
-        var assembly = typeof(App).GetTypeInfo().Assembly;
-		var assemblyName = assembly.GetName().Name.Replace(" ", "_");
-
-		var stream = assembly.GetManifestResourceStream($"{assemblyName}.{file}");
-
-		var config = new ConfigurationBuilder()
-					.AddJsonStream(stream)
-					.Build();
-
-		builder.Configuration.AddConfiguration(config);
+        builder.Configuration.AddConfiguration(config);
 
 		return builder;
 	}

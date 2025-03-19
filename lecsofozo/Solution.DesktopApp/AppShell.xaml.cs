@@ -2,19 +2,19 @@
 
 public partial class AppShell : Shell
 {
-  public AppShellViewModel ViewModel => this.ViewModel as AppShellViewModel;
+    public AppShellViewModel ViewModel => this.BindingContext as AppShellViewModel;
 
-  public AppShell(AppShellViewModel viewModel)
-  {
-    this.BindingContext = viewModel;
+    public AppShell(AppShellViewModel viewModel)
+    {
+        this.BindingContext = viewModel;
 
-    InitializeComponent();
+        InitializeComponent();
 
-    ConfigureShellNavigation();
-  }
+        ConfigureShellNavigation();
+    }
 
-  private void ConfigureShellNavigation()
-  {
-    Routing.RegisterRoute(HomePage.Name, typeof(HomePage));
-  }
+    private static void ConfigureShellNavigation()
+    {
+        Routing.RegisterRoute(MainView.Name, typeof(MainView));
+    }
 }

@@ -1,4 +1,4 @@
-﻿namespace MauiValidationLibrary.ValidationRules;
+﻿namespace Solution.ValidationLibrary.ValidationRules;
 
 public class EmailRule<T> : IValidationRule<T>
 {
@@ -6,5 +6,5 @@ public class EmailRule<T> : IValidationRule<T>
 
     public string ValidationMessage { get; set; }
 
-    public bool Check(T value) => value is string str && _regex.IsMatch(str);
+    public bool Check(object value) => value is string str && _regex.IsMatch(str);
 }

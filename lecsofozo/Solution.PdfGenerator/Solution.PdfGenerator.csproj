@@ -12,6 +12,9 @@
 		<PackageReference Include="FluentAssertions.Json" Version="6.1.0" />
 		<PackageReference Include="FluentNest" Version="6.0.271" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="Google.Apis" Version="1.69.0" />
+		<PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+		<PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3627" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />

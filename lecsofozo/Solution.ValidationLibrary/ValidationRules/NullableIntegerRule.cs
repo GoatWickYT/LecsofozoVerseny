@@ -1,10 +1,10 @@
-﻿namespace MauiValidationLibrary.ValidationRules;
+﻿namespace Solution.ValidationLibrary.ValidationRules;
 
 public class NullableIntegerRule<T> : IValidationRule<T>
 {
     public string ValidationMessage { get; set; }
 
-    public bool Check(T value)
+    public bool Check(object value)
     {
         if(value is not uint data)
         { 

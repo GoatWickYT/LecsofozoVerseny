@@ -4,10 +4,10 @@ public partial class App : Application
 {
     public App()
     {
-		  ExceptionHandler.UnhandledException += OnException;
+		ExceptionHandler.UnhandledException += OnException;
 
-		  InitializeComponent();
-      MaximizeWindow();
+		InitializeComponent();
+        MaximizeWindow();
 	}
 
     protected override Window CreateWindow(IActivationState? activationState)

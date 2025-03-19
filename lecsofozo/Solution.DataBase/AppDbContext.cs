@@ -21,21 +21,17 @@ public class AppDbContext() : DbContext
 	private static string GetConnectionString()
 	{
 #if DEBUG
-		var file = "connectionString.Development.json";
+		var file = "appSettings.Development.json";
 #else
         var file = "connectionString.Production.json";
 #endif
-
-		var assembly = typeof(AppDbContext).GetTypeInfo().Assembly;
-		var assemblyName = assembly.GetName().Name.Replace(" ", "_");
-
-		var stream = assembly.GetManifestResourceStream($"{assemblyName}.{file}");
+		var stream = new MemoryStream(File.ReadAllBytes($"{file}"));
 
 		var config = new ConfigurationBuilder()
 					.AddJsonStream(stream)
 					.Build();
 
-		var connectionStirng = config.GetValue<string>("SqlConnectionString");
-		return connectionStirng;
+		var cs = config.GetValue<string>("SqlConnectionString");
+		return cs;
 	}
 }
