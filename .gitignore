@@ -1,0 +1,12 @@
+﻿Solution.Core/bin
+Solution.Core/obj
+Solution.Database/bin
+Solution.Database/obj
+Solution.DesktopApp/bin
+Solution.DesktopApp/obj
+Solution.PdfGenerator/obj
+Solution.Services/bin
+Solution.Services/obj
+Solution.ValidationLibrary/bin
+Solution.ValidationLibrary/obj
+.vs
