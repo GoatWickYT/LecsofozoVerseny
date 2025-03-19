@@ -131,22 +131,5 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
-00 - Változók/Solution_valtozok/.vs
-01 - Beolvasas/Solution_beolvasas/.vs
-03 - Operatorok/Solution_operatorok/.vs
-04.1 - If-Else/Solution_if_else/.vs
-04.2 - Switch-Case/Solution_Switch_case/.vs
-05.1 - FOR ciklus/Solution_FOR_ciklus/.vs
-05.2 - While,Do- While(ciklus)/While, Do- While(ciklus)/.vs
-05.bonus/.vs
-12 - OOP/012 - OOP/.vs
-15 - maui/00 - Base/.vs
 /.vs
-15 - maui/01 - MovieForm/.vs
-15 - maui/01 - SimpleMovieApp/.vs
-15 - maui/02 - BookApp/.vs
-15 - maui/04 - Motorcycle/.vs
-15 - maui/04 - Motorcycles/.vs
-15 - maui/03 - Motorcycles - VA/.vs
-14 - EntityFrameworkSamples/FirstFramework/.vs
-00 - Base [with menu]/.vs
+lecsofozo/.vs
