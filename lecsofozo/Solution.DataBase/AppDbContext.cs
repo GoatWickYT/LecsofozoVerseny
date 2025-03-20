@@ -2,7 +2,15 @@
 
 public class AppDbContext() : DbContext
 {
-	private static string connectionString = string.Empty;
+	public DbSet<CityEntity> Cities { get; set; }
+	public DbSet<JudgeEntity> Judges { get; set; }
+	public DbSet<LocationEntity> Locations { get; set; }
+	public DbSet<ParticipantEntity> Participants { get; set; }
+	public DbSet<PointEntity> Points { get; set; }
+    public DbSet<RaceEntity> Races { get; set; }
+	public DbSet<TeamEntity> Teams { get; set; }
+
+    private static string connectionString = string.Empty;
 
 	static AppDbContext()
 	{
