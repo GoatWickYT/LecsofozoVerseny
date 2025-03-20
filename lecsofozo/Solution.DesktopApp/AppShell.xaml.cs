@@ -1,4 +1,5 @@
-﻿namespace Solution.DesktopApp;
+﻿
+namespace Solution.DesktopApp;
 
 public partial class AppShell : Shell
 {

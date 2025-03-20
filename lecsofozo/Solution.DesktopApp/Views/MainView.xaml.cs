@@ -1,4 +1,4 @@
-﻿namespace Solution.DesktopApp;
+﻿namespace Solution.DesktopApp.Views;
 
 public partial class MainView : ContentPage
 {

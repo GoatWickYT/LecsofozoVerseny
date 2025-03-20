@@ -16,7 +16,7 @@ public class GoogleDriveService(GoogleDriveSettings googleDriveSettings) : IGoog
         var fileMetaData = new Google.Apis.Drive.v3.Data.File()
         {
             Name = file.FileName,
-            Parents = new List<string> { googleDriveSettings.StudentFolderId }
+            Parents = new List<string> { googleDriveSettings.FolderId }
         };
 
         var mimeType = GetMimeType(file.ContentType);

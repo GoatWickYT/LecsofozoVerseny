@@ -14,3 +14,4 @@ global using Solution.DesktopApp.ViewModels;
 global using Solution.Services;
 global using System.Runtime.InteropServices;
 global using Solution.Core.Extensions;
+global using Solution.DesktopApp.Views;

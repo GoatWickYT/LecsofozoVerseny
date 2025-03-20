@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModel="clr-namespace:Solution.DesktopApp.ViewModels"
              x:DataType="viewModel:MainViewModel"
-             x:Class="Solution.DesktopApp.MainView">
+             x:Class="Solution.DesktopApp.Views.MainView">
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center">
         <Label Text="Lecso Data Base" Style="{StaticResource PageTitle}" />
