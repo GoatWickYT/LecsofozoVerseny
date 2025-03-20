@@ -8,6 +8,9 @@ public class RaceEntity
     public uint Id { get; set; }
 
     [Required]
+    public string PublicId { get; set; }
+
+    [Required]
     [MaxLength(50)]
     public string Name { get; set; }
 

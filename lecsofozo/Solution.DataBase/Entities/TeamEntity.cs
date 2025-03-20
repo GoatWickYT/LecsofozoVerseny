@@ -8,6 +8,9 @@ public class TeamEntity
     public uint Id { get; set; }
 
     [Required]
+    public string PublicId { get; set; }
+
+    [Required]
     public string Name { get; set; }
 
     public virtual ICollection<ParticipantEntity> Participants { get; set; }

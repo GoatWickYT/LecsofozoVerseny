@@ -8,6 +8,9 @@ public class JudgeEntity
     public uint Id { get; set; }
 
     [Required]
+    public string PublicId { get; set; }
+
+    [Required]
     public string Name { get; set; }
 
     [Required]

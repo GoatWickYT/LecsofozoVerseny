@@ -8,6 +8,9 @@ public class ParticipantEntity
     public uint Id { get; set; }
 
     [Required]
+    public string PublicId { get; set; }
+
+    [Required]
     public string Name { get; set; }
 
     public string? ImageId { get; set; }
