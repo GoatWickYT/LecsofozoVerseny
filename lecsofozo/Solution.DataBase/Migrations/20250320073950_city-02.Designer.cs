@@ -12,8 +12,8 @@ using Solution.DataBase;
 namespace Solution.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250319083902_init")]
-    partial class init
+    [Migration("20250320073950_city-02")]
+    partial class city02
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

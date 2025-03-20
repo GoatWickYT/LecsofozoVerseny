@@ -10,6 +10,10 @@ public class ParticipantEntity
     [Required]
     public string Name { get; set; }
 
+    public string? ImageId { get; set; }
+
+    public string? WebContentLink { get; set; }
+
     [ForeignKey("Team")]
     public uint TeamId { get; set; }
     public virtual TeamEntity Team { get; set; }

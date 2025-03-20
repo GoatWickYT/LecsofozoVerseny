@@ -13,6 +13,10 @@ public class JudgeEntity
     [Required]
     public string Email { get; set; }
 
+    public string? ImageId { get; set; }
+
+    public string? WebContentLink { get; set; }
+
     [Required]
     [MaxLength(14)]
     public string PhoneNumber { get; set; } // 06 70 123 4567
