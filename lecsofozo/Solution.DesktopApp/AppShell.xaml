@@ -21,10 +21,10 @@
 
     <Shell.MenuBarItems>
 
-      </Shell.MenuBarItems>
+    </Shell.MenuBarItems>
 
     <ShellContent Style="{StaticResource ShellContentStyle}"
-                  ContentTemplate="{DataTemplate local:MainView}"
+                  ContentTemplate="{DataTemplate views:MainView}"
                   Route="MainView" />
 
 </Shell>
