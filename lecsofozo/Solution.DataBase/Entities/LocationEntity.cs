@@ -16,6 +16,6 @@ public class LocationEntity
     public string HouseNumber { get; set; }
 
     [ForeignKey("City")]
-    public uint PostalCode { get; set; }
+    public uint CityId { get; set; }
     public virtual CityEntity City { get; set; }
 }
