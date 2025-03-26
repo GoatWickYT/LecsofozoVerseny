@@ -14,6 +14,10 @@ public class RaceModel
 
     public ICollection<TeamModel> Teams { get; set; }
 
+    public ICollection<PointModel> Points { get; set; }
+
+    public ICollection<JudgeModel> Judges { get; set; }
+
     public RaceModel()
     {
         Name = new ValidatableObject<string>();
