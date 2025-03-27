@@ -23,6 +23,9 @@ public class RaceModel
         Name = new ValidatableObject<string>();
         Date = new ValidatableObject<DateTime>();
         Location = new ValidatableObject<LocationModel>();
+        Judges = new List<JudgeModel>();
+        Teams = new List<TeamModel>();
+        Points = new List<PointModel>();
 
         AddValidators();
     }
@@ -34,6 +37,9 @@ public class RaceModel
         this.Name.Value = entity.Name;
         this.Date.Value = entity.Date;
         this.Location.Value = new LocationModel(entity.Location);
+        this.Judges = entity.Judges.Select(x => new JudgeModel(x)).ToList();
+        this.Teams = entity.Teams.Select(x => new TeamModel(x)).ToList();
+        this.Points = entity.Points.Select(x => new PointModel(x)).ToList();
     }
 
     public RaceEntity ToEntity()
@@ -43,7 +49,10 @@ public class RaceModel
             PublicId = this.PublicId,
             Name = this.Name.Value,
             Date = this.Date.Value,
-            LocationId = this.Location.Value.Id
+            LocationId = this.Location.Value.Id,
+            Judges = this.Judges.Select(x => x.ToEntity()).ToList(),
+            Teams = this.Teams.Select(x => x.ToEntity()).ToList(),
+            Points = this.Points.Select(x => x.ToEntity()).ToList()
         };
     }
 
@@ -53,6 +62,9 @@ public class RaceModel
         entity.Name = this.Name.Value;
         entity.Date = this.Date.Value;
         entity.LocationId = this.Location.Value.Id;
+        entity.Judges = this.Judges.Select(x => x.ToEntity()).ToList();
+        entity.Teams = this.Teams.Select(x => x.ToEntity()).ToList();
+        entity.Points = this.Points.Select(x => x.ToEntity()).ToList();
     }
 
     private void AddValidators()
