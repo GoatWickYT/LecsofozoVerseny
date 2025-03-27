@@ -8,11 +8,12 @@ public class TeamModel : IObjectValidator<uint>
 
     public ValidatableObject<string> Name { get; set; }
 
-    public ICollection<ParticipantEntity> Participants { get; set; }
+    public ICollection<ParticipantModel> Participants { get; set; }
 
     public TeamModel()
     {
         Name = new ValidatableObject<string>();
+        Participants = new List<ParticipantModel>();
 
         AddValidators();
     }
@@ -22,6 +23,7 @@ public class TeamModel : IObjectValidator<uint>
         this.Id = entity.Id;
         this.PublicId = entity.PublicId;
         this.Name.Value = entity.Name;
+        this.Participants = new List<ParticipantModel>();
     }
 
     public TeamEntity ToEntity()
@@ -29,7 +31,8 @@ public class TeamModel : IObjectValidator<uint>
         return new TeamEntity
         {
             PublicId = this.PublicId,
-            Name = this.Name.Value
+            Name = this.Name.Value,
+            Participants = this.Participants.Select(x => x.ToEntity()).ToList()
         };
     }
 
@@ -37,6 +40,7 @@ public class TeamModel : IObjectValidator<uint>
     {
         entity.PublicId = this.PublicId;
         entity.Name = this.Name.Value;
+        entity.Participants = this.Participants.Select(x => x.ToEntity()).ToList();
     }
 
     private void AddValidators()
