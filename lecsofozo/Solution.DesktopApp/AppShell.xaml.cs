@@ -17,5 +17,6 @@ public partial class AppShell : Shell
     private static void ConfigureShellNavigation()
     {
         Routing.RegisterRoute(MainView.Name, typeof(MainView));
+        Routing.RegisterRoute(CreateOrEditTeamView.Name, typeof(CreateOrEditTeamView));
     }
 }

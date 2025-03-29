@@ -20,7 +20,17 @@
     </Shell.Resources>
 
     <Shell.MenuBarItems>
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="Exit" Command="{Binding ExitCommand}" />
+        </MenuBarItem>
 
+        <MenuBarItem Text="Race">
+            <MenuFlyoutItem Text="Add New Team" Command="{Binding AddNewTeamCommand}">
+                <MenuFlyoutItem.IconImageSource>
+                    <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                </MenuFlyoutItem.IconImageSource>
+            </MenuFlyoutItem>
+        </MenuBarItem>
     </Shell.MenuBarItems>
 
     <ShellContent Style="{StaticResource ShellContentStyle}"

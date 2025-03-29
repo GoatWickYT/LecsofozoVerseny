@@ -10,6 +10,9 @@ public static class ConfigureDI
 
         builder.Services.AddTransient<MainView>();
 
+		builder.Services.AddTransient<CreateOrEditTeamViewModel>();
+		builder.Services.AddTransient<CreateOrEditTeamView>();
+
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService> ();
 
         return builder;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:views="clr-namespace:Solution.DesktopApp.Views"
+             xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
+             xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
+             xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
+             x:Class="Solution.DesktopApp.Views.CreateOrEditTeamView"
+             x:DataType="viewModels:CreateOrEditTeamViewModel"
+             Title="">
+    <ContentPage.Behaviors>
+        
+    </ContentPage.Behaviors>
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <Label Text="Team Name" Style="{StaticResource InputLabel}"/>
+        <Entry Text="{Binding Name}">
+            
+        </Entry>
+    </VerticalStackLayout>
+</ContentPage>
