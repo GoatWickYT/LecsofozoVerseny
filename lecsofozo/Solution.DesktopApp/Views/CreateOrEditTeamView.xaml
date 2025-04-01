@@ -36,7 +36,7 @@
         </VerticalStackLayout>
 
         <VerticalStackLayout>
-            <CarouselView x:Name="carouselView" IndicatorView="indicatorView">
+            <CarouselView x:Name="carouselView">
                 <CarouselView.ItemTemplate>
                     <DataTemplate x:DataType="models:ParticipantModel">
                         <VerticalStackLayout>
@@ -46,7 +46,6 @@
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
             </CarouselView>
-            <IndicatorView x:Name="indicatorView" Margin="5" IndicatorColor="Green" SelectedIndicatorColor="Red" HorizontalOptions="Center"/>
         </VerticalStackLayout>
         
     </StackLayout>
