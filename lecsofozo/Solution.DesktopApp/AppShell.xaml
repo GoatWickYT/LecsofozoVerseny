@@ -8,7 +8,7 @@
     xmlns:views="clr-namespace:Solution.DesktopApp.Views"
     x:DataType="viewModels:AppShellViewModel"
     Shell.FlyoutBehavior="Disabled"
-    Title="Motorcycle Database"
+    Title="Ratatouille Database"
     BackgroundColor="Black">
 
     <Shell.Resources>

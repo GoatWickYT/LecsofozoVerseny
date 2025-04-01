@@ -1,78 +1,76 @@
-﻿using System.Linq;
+﻿namespace Solution.Services.Services;
 
-namespace Solution.Services.Services;
-
-public class TeamService(AppDbContext dbContext) : ITeamService
+public class ParticipantService(AppDbContext dbContext) : IParticipantService
 {
     private int ROW_COUNT = 5;
 
-    public async Task<ErrorOr<TeamModel>> CreateAsync(TeamModel model)
+    public async Task<ErrorOr<ParticipantModel>> CreateAsync(ParticipantModel model)
     {
-        bool exists = dbContext.Teams.Any(t => t.Name.ToLower() == model.Name.Value.ToLower() &&
-                                               t.Participants.Select(x => new ParticipantModel(x)).Order().SequenceEqual(model.Participants.Select(x => x).Order()));
+        bool exists = dbContext.Participants.Any(p => p.Name.ToLower() == model.Name.Value.ToLower());
 
         if (exists)
         {
-            return Error.Conflict(description: "Team already exists.");
+            return Error.Conflict(description: "Participant already exists.");
         }
 
         var entity = model.ToEntity();
 
         entity.PublicId = Guid.NewGuid().ToString();
 
-        await dbContext.Teams.AddAsync(entity);
+        await dbContext.Participants.AddAsync(entity);
         await dbContext.SaveChangesAsync();
 
-        return new TeamModel(entity);
+        return new ParticipantModel(entity);
     }
 
     public async Task<ErrorOr<Success>> DeleteAsync(string id)
     {
-        var result = await dbContext.Teams.AsNoTracking()
-                                          .Where(t => t.PublicId == id)
-                                          .ExecuteDeleteAsync();
+        var result = await dbContext.Participants.AsNoTracking()
+                                           .Where(p => p.PublicId == id)
+                                           .ExecuteDeleteAsync();
 
         return result > 0 ? Result.Success : Error.NotFound();
     }
 
-    public async Task<ErrorOr<List<TeamModel>>> GetAllAsync() =>
-        await dbContext.Teams.AsNoTracking()
-                             .Select(t => new TeamModel(t))
-                             .ToListAsync();
+    public async Task<ErrorOr<List<ParticipantModel>>> GetAllAsync() =>
+        await dbContext.Participants.AsNoTracking()
+                              .Select(p => new ParticipantModel(p))
+                              .ToListAsync();
 
-    public async Task<ErrorOr<TeamModel>> GetByIdAsync(string id)
+    public async Task<ErrorOr<ParticipantModel>> GetByIdAsync(string id)
     {
-        var entity = await dbContext.Teams.AsNoTracking()
-                                          .FirstOrDefaultAsync(t => t.PublicId == id);
+        var entity = await dbContext.Participants.AsNoTracking()
+                                          .FirstOrDefaultAsync(p => p.PublicId == id);
 
-        return entity is null ? Error.NotFound() : new TeamModel(entity);
+        return entity is null ? Error.NotFound() : new ParticipantModel(entity);
     }
 
     public Task<int> GetMaxPageNumberAsync()
     {
-        return dbContext.Teams.AsNoTracking()
-                              .CountAsync()
-                              .ContinueWith(t => (int)Math.Ceiling(t.Result / (double)ROW_COUNT));
+        return dbContext.Participants.AsNoTracking()
+                                     .CountAsync()
+                                     .ContinueWith(t => (int)Math.Ceiling(t.Result / (double)ROW_COUNT));
     }
 
-    public async Task<ErrorOr<List<TeamModel>>> GetPagedAsync(int page = 0)
+    public async Task<ErrorOr<List<ParticipantModel>>> GetPagedAsync(int page = 0)
     {
         page = page < 0 ? 0 : page - 1;
 
-        return await dbContext.Teams.AsNoTracking()
-                                    .Skip(page * ROW_COUNT)
-                                    .Take(ROW_COUNT)
-                                    .Select(t => new TeamModel(t))
-                                    .ToListAsync();
+        return await dbContext.Participants.AsNoTracking()
+                                           .Skip(page * ROW_COUNT)
+                                           .Take(ROW_COUNT)
+                                           .Select(x => new ParticipantModel(x))
+                                           .ToListAsync();
     }
 
-    public async Task<ErrorOr<Success>> UpdateAsync(TeamModel model)
+    public async Task<ErrorOr<Success>> UpdateAsync(ParticipantModel model)
     {
-        var result = await dbContext.Teams.AsNoTracking()
-                                          .Where(x => x.PublicId == model.PublicId)
-                                          .ExecuteUpdateAsync(x => x.SetProperty(p => p.PublicId, model.PublicId)
-                                                                    .SetProperty(p => p.Participants, model.Participants.Select(x => x.ToEntity()).ToList())
-                                                                    .SetProperty(p => p.Name, model.Name.Value));
+        var result = await dbContext.Participants.AsNoTracking()
+                                                 .Where(x => x.PublicId == model.PublicId)
+                                                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.PublicId, model.PublicId)
+                                                                           .SetProperty(p => p.Name, model.Name.Value)
+                                                                           .SetProperty(p => p.WebContentLink, model.WebContentLink)
+                                                                           .SetProperty(p => p.ImageId, model.ImageId));
 
         return result > 0 ? Result.Success : Error.NotFound();
     }

@@ -11,12 +11,43 @@
              x:DataType="viewModels:CreateOrEditTeamViewModel"
              Title="">
     <ContentPage.Behaviors>
-        
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
     </ContentPage.Behaviors>
-    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-        <Label Text="Team Name" Style="{StaticResource InputLabel}"/>
-        <Entry Text="{Binding Name}">
-            
-        </Entry>
-    </VerticalStackLayout>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout>
+        <Label Text="{Binding Title}" Style="{StaticResource PageTitle}"/>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
+            <Label Text="Name" Style="{StaticResource InputLabel}" />
+            <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding TeamNameValidationCommand}" />
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                    Style="{StaticResource ValidationErrorLabelStyle}" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout>
+            <CarouselView x:Name="carouselView" IndicatorView="indicatorView">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ParticipantModel">
+                        <VerticalStackLayout>
+                            <Label Text="Member name" Style="{StaticResource InputLabel}"/>
+                            <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+            <IndicatorView x:Name="indicatorView" Margin="5" IndicatorColor="Green" SelectedIndicatorColor="Red" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+        
+    </StackLayout>
 </ContentPage>

@@ -1,3 +1,5 @@
+using Solution.Core.Models;
+
 namespace Solution.DesktopApp.Views;
 
 public partial class CreateOrEditTeamView : ContentPage
@@ -7,9 +9,9 @@ public partial class CreateOrEditTeamView : ContentPage
     public static string Name => nameof(CreateOrEditTeamView);
 
     public CreateOrEditTeamView(CreateOrEditTeamViewModel viewModel)
-	{
+    {
         this.BindingContext = viewModel;
 
-		InitializeComponent();
-	}
+        InitializeComponent();
+    }
 }

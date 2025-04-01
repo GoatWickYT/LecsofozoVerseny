@@ -14,6 +14,8 @@ public static class ConfigureDI
 		builder.Services.AddTransient<CreateOrEditTeamView>();
 
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService> ();
+        builder.Services.AddScoped<ITeamService, TeamService> ();
+        builder.Services.AddScoped<IParticipantService, ParticipantService> ();
 
         return builder;
 	}
