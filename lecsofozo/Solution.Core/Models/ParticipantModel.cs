@@ -49,6 +49,6 @@ public class ParticipantModel
 
     private void AddValidators()
     {
-        this.Name.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Name is required." });
+        this.Name.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Member name is required." });
     }
 }

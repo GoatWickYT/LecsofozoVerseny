@@ -17,7 +17,8 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     #region validation commands
     public IRelayCommand TeamNameValidationCommand => new RelayCommand(() => this.Name.Validate());
-    public IRelayCommand ParticipantNameValidationCommand => new RelayCommand(() => this.Participants.ToList().ForEach(x => x.Name.Validate()));
+    public IRelayCommand Participant1NameValidationCommand => new RelayCommand(() => this.participant1.Name.Validate());
+    public IRelayCommand Participant2NameValidationCommand => new RelayCommand(() => this.participant2.Name.Validate());
     #endregion
 
     #region event commands
@@ -36,14 +37,59 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private FileResult selectedFile = null;
 
     [ObservableProperty]
-    private ICollection<ParticipantModel> participants = new List<ParticipantModel>();
+    private ICollection<ParticipantModel> participants = new List<ParticipantModel>(10);
+
+    [ObservableProperty]
+    public ParticipantModel participant1 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant2 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant3 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant4 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant5 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant6 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant7 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant8 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant9 = new ParticipantModel();
+
+    [ObservableProperty]
+    public ParticipantModel participant10 = new ParticipantModel();
 
     private delegate Task ButtonActionDelagate();
     private ButtonActionDelagate asyncButtonAction;
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        await LoadParticipants();
+        var participantsList = Participants.ToList();
+        for (int i = participantsList.Count; i < 10; i++)
+        {
+            participantsList.Add(new ParticipantModel());
+        }
+
+        participantsList[0] = participant1;
+        participantsList[1] = participant2;
+        participantsList[2] = participant3;
+        participantsList[3] = participant4;
+        participantsList[4] = participant5;
+        participantsList[5] = participant6;
+        participantsList[6] = participant7;
+        participantsList[7] = participant8;
+        participantsList[8] = participant9;
+        participantsList[9] = participant10;
 
         bool hasValue = query.TryGetValue("Team", out object result);
 
@@ -77,7 +123,6 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
                 };
             }
         }
-
 
         asyncButtonAction = OnUpdateAsync;
         Title = "Update team";
@@ -161,17 +206,10 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         this.Participants.ToList().ForEach(x => x.WebContentLink = imageUploadResult.IsError ? null : imageUploadResult.Value.WebContentLink);
     }
 
-    private async Task LoadParticipants()
-    {
-        Participants = await appDbContext.Participants.AsNoTracking().OrderBy(x => x.Name).Select(x => new ParticipantModel(x)).ToListAsync();
-    }
-
-
-
     private bool IsFormValid()
     {
         this.Name.Validate();
-        this.Participants.ToList().ForEach(x => x.Name.Validate());
+        this.participant1.Name.Validate();
 
         return this.Name.IsValid && this.Participants.All(x => x.Name.IsValid);
     }
@@ -179,6 +217,6 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private void ClearForm()
     {
         this.Name.Value = null;
-        this.Participants.ToList().ForEach(x => x.Name.Value = null);
+        this.participant1.Name.Value = null;
     }
 }
