@@ -1,9 +1,4 @@
-﻿using ErrorOr;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.UI.Xaml.Controls;
-using Solution.Core.Models;
-
-namespace Solution.DesktopApp.ViewModels;
+﻿namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
 public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
