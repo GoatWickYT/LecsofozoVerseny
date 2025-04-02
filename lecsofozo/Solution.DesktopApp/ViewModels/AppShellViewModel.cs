@@ -5,19 +5,14 @@ public partial class AppShellViewModel
 {
     public IAsyncRelayCommand ExitCommand => new AsyncRelayCommand(OnExitAsync);
 
-    public IAsyncRelayCommand AddNewMotorcycleCommand => new AsyncRelayCommand(OnAddNewMotorcycleAsync);
-    public IAsyncRelayCommand ListAllMotorcyclesCommand => new AsyncRelayCommand(OnListAllMotorcyclesAsync);
+    public IAsyncRelayCommand AddNewTeamCommand => new AsyncRelayCommand(OnAddNewTeamAsync);
 
 
     private async Task OnExitAsync() => Application.Current.Quit();
 
-    private async Task OnAddNewMotorcycleAsync()
+    private async Task OnAddNewTeamAsync()
     {
         Shell.Current.ClearNavigationStack();
-    }
-
-    private async Task OnListAllMotorcyclesAsync()
-    {
-        Shell.Current.ClearNavigationStack();
+        await Shell.Current.GoToAsync(CreateOrEditTeamView.Name);
     }
 }

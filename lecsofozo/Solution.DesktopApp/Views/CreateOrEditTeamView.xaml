@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:views="clr-namespace:Solution.DesktopApp.Views"
+             xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
+             xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
+             xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
+             x:Class="Solution.DesktopApp.Views.CreateOrEditTeamView"
+             x:DataType="viewModels:CreateOrEditTeamViewModel"
+             Title="">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout>
+        <Label Text="{Binding Title}" Style="{StaticResource PageTitle}"/>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
+            <Label Text="Name" Style="{StaticResource InputLabel}" />
+            <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding TeamNameValidationCommand}" />
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                    Style="{StaticResource ValidationErrorLabelStyle}" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout>
+            <CarouselView x:Name="carouselView">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ParticipantModel">
+                        <VerticalStackLayout>
+                            <Label Text="Member name" Style="{StaticResource InputLabel}"/>
+                            <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+        </VerticalStackLayout>
+        
+    </StackLayout>
+</ContentPage>

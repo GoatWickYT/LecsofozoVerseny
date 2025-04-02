@@ -6,7 +6,7 @@ public class RaceEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public uint Id { get; set; }
-
+    
     [Required]
     public string PublicId { get; set; }
 
@@ -19,6 +19,7 @@ public class RaceEntity
 
     [ForeignKey("Location")]
     public uint LocationId { get; set; }
+    public virtual LocationEntity Location { get; set; }
 
     public virtual ICollection<TeamEntity> Teams { get; set; }
 
