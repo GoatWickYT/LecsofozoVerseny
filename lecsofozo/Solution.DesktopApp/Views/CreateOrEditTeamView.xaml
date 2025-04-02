@@ -35,18 +35,20 @@
                     Style="{StaticResource ValidationErrorLabelStyle}" />
         </VerticalStackLayout>
 
-        <VerticalStackLayout>
-            <CarouselView x:Name="carouselView">
-                <CarouselView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ParticipantModel">
-                        <VerticalStackLayout>
-                            <Label Text="Member name" Style="{StaticResource InputLabel}"/>
-                            <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400"/>
-                        </VerticalStackLayout>
-                    </DataTemplate>
-                </CarouselView.ItemTemplate>
-            </CarouselView>
-        </VerticalStackLayout>
+        <ScrollView HorizontalOptions="Center">
+            <VerticalStackLayout>
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
+                    <Label Text="Participant 1" Style="{StaticResource InputLabel}" />
+                    <Entry Text="{Binding Participant1.Name}" MinimumWidthRequest="400" MaximumWidthRequest="400">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding Participant1NameValidationCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Text="{Binding Participant1.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                           Style="{StaticResource ValidationErrorLabelStyle}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
         
     </StackLayout>
 </ContentPage>
