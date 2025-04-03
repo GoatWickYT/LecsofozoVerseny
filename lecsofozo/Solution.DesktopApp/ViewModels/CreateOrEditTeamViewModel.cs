@@ -1,7 +1,10 @@
 ﻿using ErrorOr;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.UI.Xaml.Controls;
 using Solution.Core.Models;
+using Windows.ApplicationModel.Appointments.AppointmentsProvider;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace Solution.DesktopApp.ViewModels;
 
@@ -17,14 +20,16 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     #region validation commands
     public IRelayCommand TeamNameValidationCommand => new RelayCommand(() => this.Name.Validate());
-    public IRelayCommand Participant1NameValidationCommand => new RelayCommand(() => this.participant1.Name.Validate());
-    public IRelayCommand Participant2NameValidationCommand => new RelayCommand(() => this.participant2.Name.Validate());
+
+    public IRelayCommand ParticipantValidationCommand => new RelayCommand(() => this.Participant.Name.Validate());
     #endregion
 
     #region event commands
     public IAsyncRelayCommand SubmitCommand => new AsyncRelayCommand(OnSubmitAsync);
 
     public IAsyncRelayCommand ImageSelectCommand => new AsyncRelayCommand(OnImageSelectAsync);
+
+    public IAsyncRelayCommand MemberAddingCommand => new AsyncRelayCommand(OnMemberAddAsync);
     #endregion
 
 
@@ -40,56 +45,13 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private ICollection<ParticipantModel> participants = new List<ParticipantModel>(10);
 
     [ObservableProperty]
-    public ParticipantModel participant1 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant2 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant3 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant4 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant5 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant6 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant7 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant8 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant9 = new ParticipantModel();
-
-    [ObservableProperty]
-    public ParticipantModel participant10 = new ParticipantModel();
+    public ParticipantModel participant = new ParticipantModel();
 
     private delegate Task ButtonActionDelagate();
     private ButtonActionDelagate asyncButtonAction;
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        var participantsList = Participants.ToList();
-        for (int i = participantsList.Count; i < 10; i++)
-        {
-            participantsList.Add(new ParticipantModel());
-        }
-
-        participantsList[0] = participant1;
-        participantsList[1] = participant2;
-        participantsList[2] = participant3;
-        participantsList[3] = participant4;
-        participantsList[4] = participant5;
-        participantsList[5] = participant6;
-        participantsList[6] = participant7;
-        participantsList[7] = participant8;
-        participantsList[8] = participant9;
-        participantsList[9] = participant10;
 
         bool hasValue = query.TryGetValue("Team", out object result);
 
@@ -131,6 +93,8 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private async Task OnAppearingAsync() { }
     private async Task OnDisappearingAsync() { }
 
+    private async Task OnMemberAddAsync() => await OnMemberAddAsyncFunction();
+
     private async Task OnSubmitAsync() => await asyncButtonAction();
 
     private async Task OnSaveAsync()
@@ -149,6 +113,27 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         if (!result.IsError)
         {
             ClearForm();
+        }
+
+        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+    }
+
+    private async Task OnMemberAddAsyncFunction()
+    {
+        if (!IsMemberFormValid())
+        {
+            return;
+        }
+
+        await UploadImageAsync();
+
+        var result = await participantService.CreateAsync(this.Participant);
+        var message = result.IsError ? result.FirstError.Description : "Participant saved.";
+        var title = result.IsError ? "Error" : "Information";
+
+        if (!result.IsError)
+        {
+            ClearMemberForm();
         }
 
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
@@ -209,14 +194,26 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private bool IsFormValid()
     {
         this.Name.Validate();
-        this.participant1.Name.Validate();
 
-        return this.Name.IsValid && this.Participants.All(x => x.Name.IsValid);
+        return this.Name.IsValid && this.Participant.Name.IsValid;
+    }
+
+    private void ClearMemberForm()
+    {
+        this.Participant.Name.Value = null;
+        this.Participant.ImageId = null;
+        this.Participant.WebContentLink = null;
+    }
+
+    private bool IsMemberFormValid()
+    {
+        this.Participant.Name.Validate();
+
+        return this.Participant.Name.IsValid;
     }
 
     private void ClearForm()
     {
         this.Name.Value = null;
-        this.participant1.Name.Value = null;
     }
 }
