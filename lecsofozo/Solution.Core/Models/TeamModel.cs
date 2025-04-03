@@ -12,13 +12,13 @@ public class TeamModel : IObjectValidator<uint>
 
     public TeamModel()
     {
-        Name = new ValidatableObject<string>();
+        this.Name = new ValidatableObject<string>();
         Participants = new List<ParticipantModel>();
 
         AddValidators();
     }
 
-    public TeamModel(TeamEntity entity)
+    public TeamModel(TeamEntity entity): this()
     {
         this.Id = entity.Id;
         this.PublicId = entity.PublicId;

@@ -30,6 +30,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     public IAsyncRelayCommand ImageSelectCommand => new AsyncRelayCommand(OnImageSelectAsync);
 
     public IAsyncRelayCommand MemberAddingCommand => new AsyncRelayCommand(OnMemberAddAsync);
+    public IAsyncRelayCommand TeamAddingCommand => new AsyncRelayCommand(OnTeamAddAsync);
     #endregion
 
 
@@ -93,7 +94,9 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private async Task OnAppearingAsync() { }
     private async Task OnDisappearingAsync() { }
 
-    private async Task OnMemberAddAsync() => await OnMemberAddAsyncFunction();
+    private async Task OnMemberAddAsync() => await MemberAddAsync();
+
+    private async Task OnTeamAddAsync() => await TeamAddAsync();
 
     private async Task OnSubmitAsync() => await asyncButtonAction();
 
@@ -118,7 +121,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
     }
 
-    private async Task OnMemberAddAsyncFunction()
+    private async Task MemberAddAsync()
     {
         if (!IsMemberFormValid())
         {
@@ -134,6 +137,25 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         if (!result.IsError)
         {
             ClearMemberForm();
+        }
+
+        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+    }
+
+    private async Task TeamAddAsync()
+    {
+        if (!IsFormValid())
+        {
+            return;
+        }
+
+        var result = await teamService.CreateAsync(this);
+        var message = result.IsError ? result.FirstError.Description : "Team saved.";
+        var title = result.IsError ? "Error" : "Information";
+
+        if (!result.IsError)
+        {
+            ClearForm();
         }
 
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
@@ -195,7 +217,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     {
         this.Name.Validate();
 
-        return this.Name.IsValid && this.Participant.Name.IsValid;
+        return this.Name.IsValid;
     }
 
     private void ClearMemberForm()

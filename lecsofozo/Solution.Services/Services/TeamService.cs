@@ -8,8 +8,7 @@ public class TeamService(AppDbContext dbContext) : ITeamService
 
     public async Task<ErrorOr<TeamModel>> CreateAsync(TeamModel model)
     {
-        bool exists = dbContext.Teams.Any(t => t.Name.ToLower() == model.Name.Value.ToLower() &&
-                                               t.Participants.Select(x => new ParticipantModel(x)).Order().SequenceEqual(model.Participants.Select(x => x).Order()));
+        bool exists = dbContext.Teams.Any(t => t.Name.ToLower() == model.Name.Value.ToLower());
 
         if (exists)
         {

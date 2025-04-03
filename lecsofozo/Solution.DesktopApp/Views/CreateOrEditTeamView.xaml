@@ -34,6 +34,8 @@
                 </Entry>
                 <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
                         Style="{StaticResource ValidationErrorLabelStyle}" />
+
+                <Button Text="Add team" WidthRequest="200" Command="{Binding TeamAddingCommand}"/>
             </VerticalStackLayout>
 
             <Border Stroke="Gray" StrokeThickness="2" Padding="20" WidthRequest="550">
