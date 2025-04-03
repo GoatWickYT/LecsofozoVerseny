@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:views="clr-namespace:Solution.DesktopApp.Views"
+             xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
+             xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
+             xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
+             x:Class="Solution.DesktopApp.Views.CreateOrEditJudgeView"
+             x:DataType="viewModels:CreateOrEditJudgeViewModel"
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <VerticalStackLayout>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            
+            <VerticalStackLayout Grid.Column="0">
+                <StackLayout Orientation="Vertical"
+                     Grid.Column="0"
+                     Margin="40">
+                    <Border Stroke="{AppThemeBinding Light=Black, Dark=White}"
+                    StrokeThickness="2"
+                    Padding="0"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                        <Image 
+                            MinimumHeightRequest="400"
+                            MaximumHeightRequest="400"
+                            MinimumWidthRequest="400"
+                            MaximumWidthRequest="400"
+                            Source="{Binding Image}"></Image>
+                    </Border>
+                    <Button Text="Select an Image"
+                    Command="{Binding ImageSelectCommand}">
+
+                    </Button>
+                </StackLayout>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1">
+                
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                    <Label Text="Name" Style="{StaticResource InputLabel}"></Label>
+                    <Entry Text="{Binding Name.Value}">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding NameValidationCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                   Style="{StaticResource ValidationErrorLabelStyle}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                    <Label Text="E-mail" Style="{StaticResource InputLabel}"></Label>
+                    <Entry Text="{Binding Email.Value}">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding EmailValidationCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Text="{Binding Email.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                   Style="{StaticResource ValidationErrorLabelStyle}" />
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                    <Label Text="Phone Number" Style="{StaticResource InputLabel}"></Label>
+                    <Entry Text="{Binding PhoneNumber.Value}">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding PhoneNumberValidationCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label Text="{Binding PhoneNumber.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                   Style="{StaticResource ValidationErrorLabelStyle}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                    <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

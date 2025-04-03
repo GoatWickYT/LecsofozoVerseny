@@ -19,7 +19,7 @@ public class JudgeModel
         AddValidators();
     }
 
-    public JudgeModel(JudgeEntity entity)
+    public JudgeModel(JudgeEntity entity): this()
     {
         this.Id = entity.Id;
         this.PublicId = entity.PublicId;

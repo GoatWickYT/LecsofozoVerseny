@@ -15,3 +15,8 @@ global using Solution.Services;
 global using System.Runtime.InteropServices;
 global using Solution.Core.Extensions;
 global using Solution.DesktopApp.Views;
+global using ErrorOr;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Maui.Controls;
+global using Solution.Core.Models;
+global using Solution.Services.Services;
