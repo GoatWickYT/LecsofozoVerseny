@@ -47,7 +47,27 @@ public partial class CreateOrEditJudgeViewModel(AppDbContext appDbContext,
             Title = "Create Judge";
             return;
         }
-        
+
+        JudgeModel model = result as JudgeModel;
+
+        this.Id = model.Id;
+        this.PublicId = model.PublicId;
+        this.Name.Value = model.Name.Value;
+        this.Email.Value = model.Email.Value;
+        this.PhoneNumber.Value = model.PhoneNumber.Value;
+
+        if (!string.IsNullOrEmpty(model.WebContentLink))
+        {
+            this.Image = new UriImageSource
+            {
+                Uri = new Uri(model.WebContentLink),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(10, 0, 0, 0)
+            };
+        }
+
+        asyncButtonAction = OnUpdateAsync;
+        Title = "Update Judge";
     }
 
     private async Task OnAppearingAsync() { }
