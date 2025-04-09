@@ -19,7 +19,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Text="MOTORCYCLES"
+        <Label Text="JUDGES"
                Grid.Row="0"
                Style="{StaticResource PageTitle}"/>
 

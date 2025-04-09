@@ -21,7 +21,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     #region validation commands
     public IRelayCommand TeamNameValidationCommand => new RelayCommand(() => this.Name.Validate());
 
-    public IRelayCommand ParticipantValidationCommand => new RelayCommand(() => this.Participant.Name.Validate());
+    public IRelayCommand ParticipantValidationCommand => new RelayCommand(() => this.Participants.All(x=> x.Name.Validate()));
     #endregion
 
     #region event commands
@@ -29,8 +29,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     public IAsyncRelayCommand ImageSelectCommand => new AsyncRelayCommand(OnImageSelectAsync);
 
-    public IAsyncRelayCommand MemberAddingCommand => new AsyncRelayCommand(OnMemberAddAsync);
-    public IAsyncRelayCommand TeamAddingCommand => new AsyncRelayCommand(OnTeamAddAsync);
+    public IRelayCommand MemberAddingCommand => new RelayCommand(MemberAdd);
     #endregion
 
 
@@ -44,9 +43,6 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     [ObservableProperty]
     private ICollection<ParticipantModel> participants = new List<ParticipantModel>(10);
-
-    [ObservableProperty]
-    public ParticipantModel participant = new ParticipantModel();
 
     private delegate Task ButtonActionDelagate();
     private ButtonActionDelagate asyncButtonAction;
@@ -64,28 +60,10 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         }
 
         TeamModel team = result as TeamModel;
-        ParticipantModel participant = result as ParticipantModel;
 
         this.Id = team.Id;
         this.Name.Value = team.Name.Value;
         this.Participants = team.Participants;
-
-        foreach (var member in Participants)
-        {
-            member.Id = participant.Id;
-            member.WebContentLink = participant.WebContentLink;
-            member.ImageId = participant.ImageId;
-            member.Name.Value = participant.Name.Value;
-
-            if (!string.IsNullOrEmpty(member.WebContentLink))
-            {
-                Image = new UriImageSource
-                {
-                    Uri = new Uri(member.WebContentLink),
-                    CacheValidity = new TimeSpan(10, 0, 0, 0)
-                };
-            }
-        }
 
         asyncButtonAction = OnUpdateAsync;
         Title = "Update team";
@@ -93,10 +71,6 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     private async Task OnAppearingAsync() { }
     private async Task OnDisappearingAsync() { }
-
-    private async Task OnMemberAddAsync() => await MemberAddAsync();
-
-    private async Task OnTeamAddAsync() => await TeamAddAsync();
 
     private async Task OnSubmitAsync() => await asyncButtonAction();
 
@@ -110,6 +84,12 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         await UploadImageAsync();
 
         var result = await teamService.CreateAsync(this);
+        foreach(var participant in this.Participants)
+        {
+            participant.TeamId = result.Value.Id;
+            await participantService.CreateAsync(participant);
+        }
+
         var message = result.IsError ? result.FirstError.Description : "Team saved.";
         var title = result.IsError ? "Error" : "Information";
 
@@ -121,44 +101,12 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
     }
 
-    private async Task MemberAddAsync()
+    private void MemberAdd()
     {
-        if (!IsMemberFormValid())
-        {
-            return;
-        }
 
-        await UploadImageAsync();
-
-        var result = await participantService.CreateAsync(this.Participant);
-        var message = result.IsError ? result.FirstError.Description : "Participant saved.";
-        var title = result.IsError ? "Error" : "Information";
-
-        if (!result.IsError)
-        {
-            ClearMemberForm();
-        }
-
-        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
-    }
-
-    private async Task TeamAddAsync()
-    {
-        if (!IsFormValid())
-        {
-            return;
-        }
-
-        var result = await teamService.CreateAsync(this);
-        var message = result.IsError ? result.FirstError.Description : "Team saved.";
-        var title = result.IsError ? "Error" : "Information";
-
-        if (!result.IsError)
-        {
-            ClearForm();
-        }
-
-        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+        ParticipantModel participant = new ParticipantModel();
+        
+        Participants.Add(participant);
     }
 
     private async Task OnUpdateAsync()
@@ -216,26 +164,19 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private bool IsFormValid()
     {
         this.Name.Validate();
+        bool isParticipantValid = true; 
 
-        return this.Name.IsValid;
-    }
+        foreach (var participant in this.Participants)
+        {
+            isParticipantValid = isParticipantValid && participant.Name.Validate();
+        }
 
-    private void ClearMemberForm()
-    {
-        this.Participant.Name.Value = null;
-        this.Participant.ImageId = null;
-        this.Participant.WebContentLink = null;
-    }
-
-    private bool IsMemberFormValid()
-    {
-        this.Participant.Name.Validate();
-
-        return this.Participant.Name.IsValid;
+        return this.Name.IsValid && isParticipantValid;
     }
 
     private void ClearForm()
     {
         this.Name.Value = null;
+        Participants.Clear();
     }
 }

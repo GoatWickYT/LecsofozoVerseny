@@ -55,7 +55,7 @@
                          VerticalOptions="Center"
                          HorizontalOptions="Center"
                          Command="{Binding DeleteCommand , Source={x:Reference this}}"
-                         CommandParameter="{Binding Judge.Id , Source={x:Reference this}}"/>
+                         CommandParameter="{Binding Judge.PublicId , Source={x:Reference this}}"/>
         </Grid>
     </Border>
 

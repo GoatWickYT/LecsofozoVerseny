@@ -103,6 +103,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Components\ParticipantComponent.xaml.cs">
+	    <DependentUpon>ParticipantComponent.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\MainView.xaml.cs">
 	    <DependentUpon>MainView.xaml</DependentUpon>
 	  </Compile>
@@ -119,6 +122,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Components\JudgeListComponent.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Components\ParticipantComponent.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CreateOrEditJudgeView.xaml">
