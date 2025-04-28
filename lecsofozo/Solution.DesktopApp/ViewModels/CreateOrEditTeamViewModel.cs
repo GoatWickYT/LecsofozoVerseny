@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.UI.Xaml.Controls;
 using Solution.Core.Models;
+using Solution.Database.Migrations;
+using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Appointments.AppointmentsProvider;
 using Windows.ApplicationModel.VoiceCommands;
+using Windows.Services.Maps;
 
 namespace Solution.DesktopApp.ViewModels;
 
@@ -19,17 +22,19 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     #endregion
 
     #region validation commands
-    public IRelayCommand TeamNameValidationCommand => new RelayCommand(() => this.Name.Validate());
+    public IRelayCommand TeamNameValidationCommand => new RelayCommand(() => Team.Name.Validate());
 
-    public IRelayCommand ParticipantValidationCommand => new RelayCommand(() => this.Participants.All(x=> x.Name.Validate()));
+    public IRelayCommand ParticipantValidationCommand => new RelayCommand<string>((publicId) => Participants.FirstOrDefault(x => x.PublicId == publicId).Name.Validate());
     #endregion
 
     #region event commands
     public IAsyncRelayCommand SubmitCommand => new AsyncRelayCommand(OnSubmitAsync);
 
-    public IAsyncRelayCommand ImageSelectCommand => new AsyncRelayCommand(OnImageSelectAsync);
+    public IAsyncRelayCommand ImageSelectCommand => new AsyncRelayCommand<string>((publicId) => OnImageSelectAsync(Participants.FirstOrDefault(x => x.PublicId == publicId)));
 
     public IRelayCommand MemberAddingCommand => new RelayCommand(MemberAdd);
+
+    public IAsyncRelayCommand DeleteParticipantCommand => new AsyncRelayCommand<string>((publicId) => OnDeleteParticipantAsync(publicId));
     #endregion
 
 
@@ -37,12 +42,10 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
     private string title;
 
     [ObservableProperty]
-    private ImageSource image;
-
-    private FileResult selectedFile = null;
+    private TeamModel team = new TeamModel();
 
     [ObservableProperty]
-    private ICollection<ParticipantModel> participants = new List<ParticipantModel>(10);
+    private ObservableCollection<ParticipantModel> participants = new ObservableCollection<ParticipantModel>();
 
     private delegate Task ButtonActionDelagate();
     private ButtonActionDelagate asyncButtonAction;
@@ -61,9 +64,31 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
         TeamModel team = result as TeamModel;
 
-        this.Id = team.Id;
-        this.Name.Value = team.Name.Value;
-        this.Participants = team.Participants;
+        Team.Id = team.Id;
+        Team.Name.Value = team.Name.Value;
+        var participants = await appDbContext.Participants.Where(x => x.TeamId == team.Id).ToListAsync();
+
+        foreach (var participant in participants)
+        {
+            ParticipantModel temp = new ParticipantModel();
+            temp.Id = participant.Id;
+            temp.PublicId = participant.PublicId;
+            temp.Name.Value = participant.Name;
+            temp.ImageId = participant.ImageId;
+            temp.WebContentLink = participant.WebContentLink;
+            temp.Team = new TeamModel(participant.Team);
+
+            if (!string.IsNullOrEmpty(participant.WebContentLink))
+            {
+                temp.Image = new UriImageSource
+                {
+                    Uri = new Uri(participant.WebContentLink), CacheValidity = new TimeSpan(10,0,0,0)
+                };
+            };
+
+            Participants.Add(temp);
+        };
+
 
         asyncButtonAction = OnUpdateAsync;
         Title = "Update team";
@@ -81,20 +106,19 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
             return;
         }
 
-        await UploadImageAsync();
-
-        var result = await teamService.CreateAsync(this);
-        foreach(var participant in this.Participants)
-        {
-            participant.TeamId = result.Value.Id;
-            await participantService.CreateAsync(participant);
-        }
-
+        var result = await teamService.CreateAsync(Team);
         var message = result.IsError ? result.FirstError.Description : "Team saved.";
         var title = result.IsError ? "Error" : "Information";
 
         if (!result.IsError)
         {
+            foreach(var participant in Participants)
+            {
+                participant.Team = result.Value;
+                await UploadImageAsync(participant);
+                await participantService.CreateAsync(participant);
+            }
+
             ClearForm();
         }
 
@@ -103,10 +127,39 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     private void MemberAdd()
     {
+        if (Participants.Count < 10)
+        {
+            string publicId = Guid.NewGuid().ToString();
 
-        ParticipantModel participant = new ParticipantModel();
-        
-        Participants.Add(participant);
+            ParticipantModel participant = new ParticipantModel{
+                PublicId = publicId
+            };
+
+            Participants.Add(participant);
+        }
+    }
+
+    private async Task OnDeleteParticipantAsync(string publicId)
+    {
+        ParticipantModel participant = Participants.FirstOrDefault(x => x.PublicId == publicId);
+
+        if(participant.Id == 0)
+        {
+            Participants.Remove(participant);
+        }
+        else
+        {
+            var result = await participantService.DeleteAsync(publicId);
+            var message = result.IsError ? result.FirstError.Description : "Deleted successfully!";
+            var title = result.IsError ? "Error" : "Information";
+
+            if (!result.IsError)
+            {
+                Participants.Remove(participant);
+            }
+
+            await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+        }
     }
 
     private async Task OnUpdateAsync()
@@ -116,67 +169,75 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
             return;
         }
 
-        await UploadImageAsync();
-
-        var result = await teamService.UpdateAsync(this);
+        var result = await teamService.UpdateAsync(Team);
 
         var message = result.IsError ? result.FirstError.Description : "Team updated.";
         var title = result.IsError ? "Error" : "Information";
 
+        if (!result.IsError)
+        {
+            foreach(var participant in Participants)
+            {
+                participant.Team = Team;
+                await UploadImageAsync(participant);
+                await participantService.UpdateOrSaveAsync(participant);
+            }
+        }
+
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
     }
 
-    private async Task OnImageSelectAsync()
+    private async Task OnImageSelectAsync(ParticipantModel participant)
     {
-        selectedFile = await FilePicker.PickAsync(new PickOptions
+        participant.SelectedFile = await FilePicker.PickAsync(new PickOptions
         {
             FileTypes = FilePickerFileType.Images,
-            PickerTitle = "Please select the member image"
+            PickerTitle = "Please select the participant image"
         });
 
-        if (selectedFile is null)
+        if (participant.SelectedFile is null)
         {
             return;
         }
 
-        var stream = await selectedFile.OpenReadAsync();
-        Image = ImageSource.FromStream(() => stream);
+        var stream = await participant.SelectedFile.OpenReadAsync();
+        participant.Image = ImageSource.FromStream(() => stream);
     }
 
-    private async Task UploadImageAsync()
+    private async Task UploadImageAsync(ParticipantModel participant)
     {
-        if (selectedFile is null)
+        if (participant.SelectedFile is null)
         {
             return;
         }
 
-        var imageUploadResult = await googleDriveService.UploadFileAsync(selectedFile);
+        var imageUploadResult = await googleDriveService.UploadFileAsync(participant.SelectedFile);
 
-        var message = imageUploadResult.IsError ? imageUploadResult.FirstError.Description : "Member image uploaded.";
+        var message = imageUploadResult.IsError ? imageUploadResult.FirstError.Description : "Participant image uploaded.";
         var title = imageUploadResult.IsError ? "Error" : "Information";
 
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");
 
-        this.Participants.ToList().ForEach(x => x.ImageId = imageUploadResult.IsError ? null : imageUploadResult.Value.Id);
-        this.Participants.ToList().ForEach(x => x.WebContentLink = imageUploadResult.IsError ? null : imageUploadResult.Value.WebContentLink);
+        participant.ImageId = imageUploadResult.IsError ? null : imageUploadResult.Value.Id;
+        participant.WebContentLink = imageUploadResult.IsError ? null : imageUploadResult.Value.WebContentLink;
     }
 
     private bool IsFormValid()
     {
-        this.Name.Validate();
+        Team.Name.Validate();
         bool isParticipantValid = true; 
 
-        foreach (var participant in this.Participants)
+        foreach (var participant in Team.Participants)
         {
             isParticipantValid = isParticipantValid && participant.Name.Validate();
         }
 
-        return this.Name.IsValid && isParticipantValid;
+        return Team.Name.IsValid && isParticipantValid;
     }
 
     private void ClearForm()
     {
-        this.Name.Value = null;
+        Team.Name.Value = null;
         Participants.Clear();
     }
 }

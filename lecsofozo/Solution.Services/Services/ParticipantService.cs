@@ -1,4 +1,6 @@
-﻿namespace Solution.Services.Services;
+﻿using System.ComponentModel.Design;
+
+namespace Solution.Services.Services;
 
 public class ParticipantService(AppDbContext dbContext) : IParticipantService
 {
@@ -15,12 +17,13 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
 
         var entity = model.ToEntity();
 
-        entity.PublicId = Guid.NewGuid().ToString();
-
         await dbContext.Participants.AddAsync(entity);
         await dbContext.SaveChangesAsync();
 
-        return new ParticipantModel(entity);
+        return new ParticipantModel(entity) 
+        {
+            Team = model.Team
+        };
     }
 
     public async Task<ErrorOr<Success>> DeleteAsync(string id)
@@ -43,6 +46,18 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
                                           .FirstOrDefaultAsync(p => p.PublicId == id);
 
         return entity is null ? Error.NotFound() : new ParticipantModel(entity);
+    }
+
+    public async Task<List<ParticipantModel>> GetByTeamIdAsync(string teamId)
+    {
+        var entities = await dbContext.Participants.Include(x => x.Team).AsNoTracking().Where(x => x.PublicId == teamId).ToListAsync();
+        List<ParticipantModel> result = new List<ParticipantModel>();
+        foreach (var participant in entities)
+        {
+            result.Add(new ParticipantModel(participant));
+        }
+
+        return result;
     }
 
     public Task<int> GetMaxPageNumberAsync()
@@ -73,5 +88,19 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
                                                                            .SetProperty(p => p.ImageId, model.ImageId));
 
         return result > 0 ? Result.Success : Error.NotFound();
+    }
+
+    public async Task<ErrorOr<Success>> UpdateOrSaveAsync(ParticipantModel model)
+    {
+        if (model.Id > 0)
+        {
+            var result = await UpdateAsync(model);
+            return result;
+        }
+        else
+        {
+            var result2 = await CreateAsync(model);
+            return result2.IsError ? Error.Failure() : Result.Success;
+        }
     }
 }

@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
              xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
              xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
+             xmlns:components="clr-namespace:Solution.DesktopApp.Components"
              x:Class="Solution.DesktopApp.Views.CreateOrEditTeamView"
              x:DataType="viewModels:CreateOrEditTeamViewModel"
              Title="">
@@ -27,18 +28,34 @@
 
             <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
                 <Label Text="Name" Style="{StaticResource InputLabel}" />
-                <Entry Text="{Binding Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400">
+                <Entry Text="{Binding Team.Name.Value}" MinimumWidthRequest="400" MaximumWidthRequest="400">
                     <Entry.Behaviors>
                         <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding TeamNameValidationCommand}" />
                     </Entry.Behaviors>
                 </Entry>
-                <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                <Label Text="{Binding Team.Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
                     Style="{StaticResource ValidationErrorLabelStyle}" />
             </VerticalStackLayout>
 
             <Border Stroke="Gray" StrokeThickness="2" Padding="20" WidthRequest="550">
                 <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
-                    
+                    <ScrollView Grid.Row="1">
+                        <CollectionView ItemsSource="{Binding Participants}"
+                                        Margin="50, 0">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:ParticipantModel">
+                                    <components:ParticipantComponent Participant="{Binding .}"
+                                                    DeleteCommand="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CreateOrEditTeamViewModel}}, Path=DeleteCommand}"
+                                                    ImageSelectCommand ="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CreateOrEditTeamViewModel}}, Path=ImageSelectCommand}"
+                                                    ParticipantValidationCommand ="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CreateOrEditTeamViewModel}}, Path=ParticipantValidationCommand}"
+                                                    CommandParameter="{Binding PublicId}"/>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
                     <Button Text="Add member to team" WidthRequest="200" Command="{Binding MemberAddingCommand}"/>
                 </VerticalStackLayout>
             </Border>

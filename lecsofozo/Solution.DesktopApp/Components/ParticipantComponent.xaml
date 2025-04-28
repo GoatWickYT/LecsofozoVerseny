@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Solution.DesktopApp.Components.ParticipantListComponent"
+             x:Class="Solution.DesktopApp.Components.ParticipantComponent"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
              xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
+             xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
              x:Name="this">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-
-        <Label Text="Participant name" Style="{StaticResource InputLabel}" HorizontalTextAlignment="Center"/>
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    
+    <VerticalStackLayout>
+        <Label Text="Participant name" Style="{StaticResource InputLabel}"/>
         <Entry Text="{Binding Participant.Name.Value, Source={x:Reference this}}" MinimumWidthRequest="200" MaximumWidthRequest="200">
             <Entry.Behaviors>
-                <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding ParticipantValidationCommand, Source={x:Reference this}}" />
+                <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding ParticipantValidationCommand, Source={x:Reference this}}"
+                                                CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
             </Entry.Behaviors>
         </Entry>
         <Label Text="{Binding Participant.Name.Errors, Converter={StaticResource FirstValidationErrorConverter}, Source={x:Reference this}}"
@@ -34,11 +37,12 @@
                     Padding="0"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                <Image Source="{Binding Participant.Image, Source={x:Reference this}}" HeightRequest="500" WidthRequest="300"/>
+                <Image Source="{Binding Participant.Image, Source={x:Reference this}}"/>
             </Border>
             <Button Text="Plese select an image"
                     Margin="0,5"
-                    Command="{Binding ImageSelectCommand, Source={x:Reference this}}"/>
+                    Command="{Binding ImageSelectCommand, Source={x:Reference this}}"
+                    CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
         </StackLayout>
-    </Grid>
+    </VerticalStackLayout>
 </ContentView>

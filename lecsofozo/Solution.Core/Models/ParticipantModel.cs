@@ -3,7 +3,7 @@
 namespace Solution.Core.Models;
 
 [ObservableObject]
-public class ParticipantModel
+public partial class ParticipantModel
 {
     public uint Id { get; set; }
 
@@ -13,12 +13,14 @@ public class ParticipantModel
 
     public string WebContentLink { get; set; }
 
-    public uint TeamId { get; set; }
+    public TeamModel Team { get; set; }
+
+    public FileResult SelectedFile { get; set; }
 
     [ObservableProperty]
     private ImageSource image;
 
-    public ValidatableObject<string> Name { get; protected set; }
+    public ValidatableObject<string> Name { get; set; }
 
     public ParticipantModel()
     {
@@ -34,7 +36,7 @@ public class ParticipantModel
         this.ImageId = entity.ImageId;
         this.WebContentLink = entity.WebContentLink;
         this.Name.Value = entity.Name;
-        this.TeamId = entity.TeamId;
+        this.Team = new TeamModel(entity.Team);
     }
 
     public ParticipantEntity ToEntity()
@@ -45,7 +47,7 @@ public class ParticipantModel
             ImageId = this.ImageId,
             WebContentLink = this.WebContentLink,
             Name = this.Name.Value,
-            TeamId = this.TeamId
+            TeamId = this.Team.Id,
         };
     }
 
@@ -55,11 +57,11 @@ public class ParticipantModel
         entity.ImageId = this.ImageId;
         entity.WebContentLink = this.WebContentLink;
         entity.Name = this.Name.Value;
-        this.TeamId = this.TeamId;
+        entity.TeamId = this.Team.Id;
     }
 
     private void AddValidators()
     {
-        this.Name.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Member name is required." });
+        this.Name.Validations.Add(new IsNotNullOrEmptyRule<string> { ValidationMessage = "Participant name is required." });
     }
 }

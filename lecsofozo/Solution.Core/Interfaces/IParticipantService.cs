@@ -9,4 +9,6 @@ public interface IParticipantService
     Task<ErrorOr<List<ParticipantModel>>> GetAllAsync();
     Task<ErrorOr<List<ParticipantModel>>> GetPagedAsync(int page = 0);
     Task<int> GetMaxPageNumberAsync();
+    Task<ErrorOr<Success>> UpdateOrSaveAsync(ParticipantModel model);
+    Task<List<ParticipantModel>> GetByTeamIdAsync(string teamId);
 }

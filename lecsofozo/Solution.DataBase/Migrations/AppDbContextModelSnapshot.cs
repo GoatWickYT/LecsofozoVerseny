@@ -34,7 +34,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("RacesId");
 
-                    b.ToTable("JudgeEntityRaceEntity");
+                    b.ToTable("JudgeEntityRaceEntity", (string)null);
                 });
 
             modelBuilder.Entity("RaceEntityTeamEntity", b =>
@@ -49,7 +49,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("TeamsId");
 
-                    b.ToTable("RaceEntityTeamEntity");
+                    b.ToTable("RaceEntityTeamEntity", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.CityEntity", b =>
@@ -70,7 +70,7 @@ namespace Solution.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("City");
+                    b.ToTable("City", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.JudgeEntity", b =>
@@ -106,7 +106,7 @@ namespace Solution.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Judge");
+                    b.ToTable("Judge", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.LocationEntity", b =>
@@ -134,7 +134,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Location", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.ParticipantEntity", b =>
@@ -166,7 +166,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Participant");
+                    b.ToTable("Participant", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.PointEntity", b =>
@@ -192,7 +192,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Point");
+                    b.ToTable("Point", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.RaceEntity", b =>
@@ -222,7 +222,7 @@ namespace Solution.Database.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Race");
+                    b.ToTable("Race", (string)null);
                 });
 
             modelBuilder.Entity("Solution.Database.Entities.TeamEntity", b =>
@@ -243,7 +243,7 @@ namespace Solution.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Team");
+                    b.ToTable("Team", (string)null);
                 });
 
             modelBuilder.Entity("JudgeEntityRaceEntity", b =>

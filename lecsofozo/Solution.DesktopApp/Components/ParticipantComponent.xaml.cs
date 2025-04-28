@@ -1,11 +1,11 @@
 namespace Solution.DesktopApp.Components;
 
-public partial class ParticipantListComponent : ContentView
+public partial class ParticipantComponent : ContentView
 {
     public static readonly BindableProperty ParticipantProperty = BindableProperty.Create(
        propertyName: nameof(Participant),
        returnType: typeof(ParticipantModel),
-       declaringType: typeof(ParticipantListComponent),
+       declaringType: typeof(ParticipantComponent),
        defaultValue: null,
        defaultBindingMode: BindingMode.OneWay
        );
@@ -19,7 +19,7 @@ public partial class ParticipantListComponent : ContentView
     public static readonly BindableProperty CommandParameterProperty = BindableProperty.Create(
         propertyName: nameof(CommandParameter),
         returnType: typeof(string),
-        declaringType: typeof(ParticipantListComponent),
+        declaringType: typeof(ParticipantComponent),
         defaultValue: null,
         defaultBindingMode: BindingMode.TwoWay
         );
@@ -33,9 +33,9 @@ public partial class ParticipantListComponent : ContentView
     public static readonly BindableProperty ParticipantValidationCommandProperty = BindableProperty.Create(
         propertyName: nameof(ParticipantValidationCommand),
         returnType: typeof(IAsyncRelayCommand),
-        declaringType: typeof(ParticipantListComponent),
+        declaringType: typeof(ParticipantComponent),
         defaultValue: null,
-        defaultBindingMode: BindingMode.OneWay
+        defaultBindingMode: BindingMode.TwoWay
         );
 
     public IAsyncRelayCommand ParticipantValidationCommand
@@ -47,7 +47,7 @@ public partial class ParticipantListComponent : ContentView
     public static readonly BindableProperty ImageSelectCommandProperty = BindableProperty.Create(
         propertyName: nameof(ImageSelectCommand),
         returnType: typeof(IAsyncRelayCommand),
-        declaringType: typeof(ParticipantListComponent),
+        declaringType: typeof(ParticipantComponent),
         defaultValue: null,
         defaultBindingMode: BindingMode.OneWay
         );
@@ -58,7 +58,21 @@ public partial class ParticipantListComponent : ContentView
         set => SetValue(ImageSelectCommandProperty, value);
     }
 
-    public ParticipantListComponent()
+    public static readonly BindableProperty DeleteCommandProperty = BindableProperty.Create(
+        propertyName: nameof(DeleteCommand),
+        returnType: typeof(IAsyncRelayCommand),
+        declaringType: typeof(ParticipantComponent),
+        defaultValue: null,
+        defaultBindingMode: BindingMode.OneWay
+        );
+
+    public IAsyncRelayCommand DeleteCommand
+    {
+        get => (IAsyncRelayCommand)GetValue(DeleteCommandProperty);
+        set => SetValue(DeleteCommandProperty, value);
+    }
+
+    public ParticipantComponent()
 	{
 		InitializeComponent();
 	}
