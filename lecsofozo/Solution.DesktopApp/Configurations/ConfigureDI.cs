@@ -13,6 +13,9 @@ public static class ConfigureDI
         builder.Services.AddTransient<JudgeListView>();
         builder.Services.AddTransient<JudgeListViewModel>();
 
+        builder.Services.AddTransient<TeamListView>();
+        builder.Services.AddTransient<TeamListViewModel>();
+
         builder.Services.AddTransient<CreateOrEditJudgeView>();
         builder.Services.AddTransient<CreateOrEditJudgeViewModel>();
 

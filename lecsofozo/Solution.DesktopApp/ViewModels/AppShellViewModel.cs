@@ -7,6 +7,8 @@ public partial class AppShellViewModel
 
     public IAsyncRelayCommand AddNewTeamCommand => new AsyncRelayCommand(OnAddNewTeamAsync);
 
+    public IAsyncRelayCommand ListTeamCommand => new AsyncRelayCommand(OnListTeamAsync);
+
     public IAsyncRelayCommand AddNewJudgeCommand => new AsyncRelayCommand(OnAddNewJudgeAsync);
 
     public IAsyncRelayCommand ListJudgeCommand => new AsyncRelayCommand(OnListJudgeAsync);
@@ -28,5 +30,11 @@ public partial class AppShellViewModel
     {
         Shell.Current.ClearNavigationStack();
         await Shell.Current.GoToAsync(JudgeListView.Name);
+    }
+
+    private async Task OnListTeamAsync()
+    {
+        Shell.Current.ClearNavigationStack();
+        await Shell.Current.GoToAsync(TeamListView.Name);
     }
 }

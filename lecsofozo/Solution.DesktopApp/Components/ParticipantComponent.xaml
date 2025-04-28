@@ -16,7 +16,7 @@
     </ContentView.Resources>
     
     <VerticalStackLayout>
-        <Label Text="Participant name" Style="{StaticResource InputLabel}"/>
+        <Label Text="Participant name" Style="{StaticResource InputLabel}" HorizontalTextAlignment="Center"/>
         <Entry Text="{Binding Participant.Name.Value, Source={x:Reference this}}" MinimumWidthRequest="200" MaximumWidthRequest="200">
             <Entry.Behaviors>
                 <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding ParticipantValidationCommand, Source={x:Reference this}}"
@@ -42,6 +42,10 @@
             <Button Text="Plese select an image"
                     Margin="0,5"
                     Command="{Binding ImageSelectCommand, Source={x:Reference this}}"
+                    CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
+            <Button Text="Delete participant"
+                    Margin="0,5"
+                    Command="{Binding DeleteCommand, Source={x:Reference this}}"
                     CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
         </StackLayout>
     </VerticalStackLayout>

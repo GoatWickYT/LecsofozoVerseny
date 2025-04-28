@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
+             xmlns:components="clr-namespace:Solution.DesktopApp.Components"
+             x:Class="Solution.DesktopApp.Views.TeamListView"
+             x:DataType="viewModels:TeamListViewModel">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Text="TEAMS"
+           Grid.Row="0"
+           Style="{StaticResource PageTitle}"/>
+
+        <Label Text="{Binding TeamName}"
+            Grid.Row="1"
+            Style="{StaticResource PageTitle}"/>
+
+        <ScrollView Grid.Row="2">
+            <CollectionView ItemsSource="{Binding Participants}"
+                    Margin="50, 0">
+                <CollectionView.Header>
+                    <Border Style="{StaticResource TableHeader}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*" />
+                                <ColumnDefinition Width="4*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Image"
+                                   Grid.Column="0"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="Name"
+                                   Grid.Column="1"
+                                   HorizontalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </CollectionView.Header>
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ParticipantModel">
+                        <components:ParticipantListComponent Participant="{Binding .}"
+                                                    CommandParameter="{Binding PublicId}"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.Footer>
+                    <FlexLayout AlignContent="SpaceEvenly" 
+                        Direction="Row"
+                        JustifyContent="SpaceBetween"
+                        Margin="30">
+                        <Button Text="First"
+                        IsEnabled="{Binding FirstButtonEnabled}"
+                        Command="{Binding FirstPageCommand}"
+                        Style="{StaticResource MenuBarItem}"
+                        Padding="10"/>
+                        <HorizontalStackLayout>
+                            <Button Text="Previous"
+                            IsEnabled="{Binding PreviousButtonEnabled}"
+                            Command="{Binding PreviousPageCommand}"
+                            Style="{StaticResource MenuBarItem}"
+                            Padding="10"/>
+                            <Label Text="{Binding PageNumber}"
+                           Margin="20,0"
+                           HorizontalTextAlignment="Center"/>
+                            <Button Text="Next"
+                            IsEnabled="{Binding NextButtonEnabled}"
+                            Command="{Binding NextPageCommand}"
+                            Style="{StaticResource MenuBarItem}"
+                            Padding="10"/>
+                        </HorizontalStackLayout>
+                        <Button Text="Last"
+                        IsEnabled="{Binding LastButtonEnabled}"
+                        Command="{Binding LastPageCommand}"
+                        Style="{StaticResource MenuBarItem}"
+                        Padding="10"/>
+                    </FlexLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </ScrollView>
+    </Grid>
+</ContentPage>

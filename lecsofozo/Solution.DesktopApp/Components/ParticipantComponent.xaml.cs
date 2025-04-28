@@ -32,15 +32,15 @@ public partial class ParticipantComponent : ContentView
 
     public static readonly BindableProperty ParticipantValidationCommandProperty = BindableProperty.Create(
         propertyName: nameof(ParticipantValidationCommand),
-        returnType: typeof(IAsyncRelayCommand),
+        returnType: typeof(IRelayCommand),
         declaringType: typeof(ParticipantComponent),
         defaultValue: null,
         defaultBindingMode: BindingMode.TwoWay
         );
 
-    public IAsyncRelayCommand ParticipantValidationCommand
+    public IRelayCommand ParticipantValidationCommand
     {
-        get => (IAsyncRelayCommand)GetValue(ParticipantValidationCommandProperty);
+        get => (IRelayCommand)GetValue(ParticipantValidationCommandProperty);
         set => SetValue(ParticipantValidationCommandProperty, value);
     }
 

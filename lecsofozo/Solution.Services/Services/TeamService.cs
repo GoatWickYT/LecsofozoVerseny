@@ -1,11 +1,10 @@
-﻿using System.Linq;
+﻿using Solution.ValidationLibrary;
+using System.Linq;
 
 namespace Solution.Services.Services;
 
 public class TeamService(AppDbContext dbContext) : ITeamService
 {
-    private int ROW_COUNT = 5;
-
     public async Task<ErrorOr<TeamModel>> CreateAsync(TeamModel model)
     {
         bool exists = dbContext.Teams.Any(t => t.Name.ToLower() == model.Name.Value.ToLower());
@@ -36,6 +35,7 @@ public class TeamService(AppDbContext dbContext) : ITeamService
 
     public async Task<ErrorOr<List<TeamModel>>> GetAllAsync() =>
         await dbContext.Teams.AsNoTracking()
+                             .Include(x => x.Participants)
                              .Select(t => new TeamModel(t))
                              .ToListAsync();
 
@@ -50,19 +50,35 @@ public class TeamService(AppDbContext dbContext) : ITeamService
     public Task<int> GetMaxPageNumberAsync()
     {
         return dbContext.Teams.AsNoTracking()
-                              .CountAsync()
-                              .ContinueWith(t => (int)Math.Ceiling(t.Result / (double)ROW_COUNT));
+                              .CountAsync();
     }
 
     public async Task<ErrorOr<List<TeamModel>>> GetPagedAsync(int page = 0)
     {
         page = page < 0 ? 0 : page - 1;
 
-        return await dbContext.Teams.AsNoTracking()
-                                    .Skip(page * ROW_COUNT)
-                                    .Take(ROW_COUNT)
-                                    .Select(t => new TeamModel(t))
-                                    .ToListAsync();
+        var result = await dbContext.Teams.AsNoTracking()
+                                          .Skip(page)
+                                          .Take(1)
+                                          .Select(t => new TeamModel
+                                          {
+                                              Id = t.Id,
+                                              PublicId = t.PublicId,
+                                              Name = new ValidatableObject<string> { Value = t.Name },
+                                              Participants = dbContext.Participants.AsNoTracking()
+                                                    .Where(p => p.TeamId == t.Id)
+                                                    .Select(p => new ParticipantModel
+                                                    {
+                                                        Id = p.Id,
+                                                        PublicId = p.PublicId,
+                                                        Name = new ValidatableObject<string> { Value = p.Name },
+                                                        ImageId = p.ImageId,
+                                                        WebContentLink = p.WebContentLink
+                                                    }).ToList()
+                                          })
+                                          .ToListAsync();
+
+        return result.Any() ? result : Error.NotFound();
     }
 
     public async Task<ErrorOr<Success>> UpdateAsync(TeamModel model)

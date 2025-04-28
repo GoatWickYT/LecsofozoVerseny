@@ -4,7 +4,6 @@
              x:Class="Solution.DesktopApp.Components.JudgeListComponent"
              x:Name="this">
     <Border Style="{StaticResource TableData}">
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4*" />

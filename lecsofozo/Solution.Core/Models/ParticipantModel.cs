@@ -24,12 +24,12 @@ public partial class ParticipantModel
 
     public ParticipantModel()
     {
-        Name = new ValidatableObject<string>();
+        this.Name = new ValidatableObject<string>();
 
         AddValidators();
     }
 
-    public ParticipantModel(ParticipantEntity entity)
+    public ParticipantModel(ParticipantEntity entity): this()
     {
         this.Id = entity.Id;
         this.PublicId = entity.PublicId;

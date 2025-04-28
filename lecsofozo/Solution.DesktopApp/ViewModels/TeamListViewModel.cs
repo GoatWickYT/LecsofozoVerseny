@@ -1,9 +1,13 @@
-﻿using System.Collections.ObjectModel;
+
+using Solution.Core.Interfaces;
+using Solution.Services.Services;
+using System.Collections.ObjectModel;
+using Windows.Media.AppBroadcasting;
 
 namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
-public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel(), IQueryAttributable
+public partial class TeamListViewModel(ITeamService teamService) : TeamModel(), IQueryAttributable
 {
     #region life cycle commands
     public IAsyncRelayCommand AppearingCommand => new AsyncRelayCommand(OnAppearingAsync);
@@ -11,17 +15,19 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
     #endregion
 
     public IAsyncRelayCommand PreviousPageCommand => new AsyncRelayCommand(PreviousPage);
-
     public IAsyncRelayCommand FirstPageCommand => new AsyncRelayCommand(FirstPage);
-
     public IAsyncRelayCommand NextPageCommand => new AsyncRelayCommand(NextPage);
-
     public IAsyncRelayCommand LastPageCommand => new AsyncRelayCommand(LastPage);
-
     public IAsyncRelayCommand DeleteCommand => new AsyncRelayCommand<string>((id) => OnDeleteAsync(id));
 
     [ObservableProperty]
-    private ObservableCollection<JudgeModel> judges;
+    private static ObservableCollection<TeamModel> teams;
+
+    [ObservableProperty]
+    private static ICollection<ParticipantModel> participants;
+
+    [ObservableProperty]
+    private string teamName = string.Empty;
 
     [ObservableProperty]
     private string pageNumber = "page\n1";
@@ -39,13 +45,12 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
     private bool firstButtonEnabled = false;
 
     private int maxPageNumber;
-
     private int page = 1;
 
     private async Task OnAppearingAsync()
     {
-        maxPageNumber = await judgeService.GetMaxPageNumberAsync();
-        await LoadJudgesAsync();
+        maxPageNumber = await teamService.GetMaxPageNumberAsync();
+        await LoadTeamsAsync();
     }
 
     private async Task OnDisappearingAsync()
@@ -58,7 +63,7 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
         {
             page--;
             PageNumber = $"page\n{page}";
-            await LoadJudgesAsync();
+            await LoadTeamsAsync();
             return;
         }
     }
@@ -67,7 +72,7 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
     {
         page = 1;
         PageNumber = $"page\n{page}";
-        await LoadJudgesAsync();
+        await LoadTeamsAsync();
     }
 
     private async Task NextPage()
@@ -79,61 +84,61 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
         page++;
         PageNumber = $"page\n{page}";
 
-        await LoadJudgesAsync();
+        await LoadTeamsAsync();
     }
 
     private async Task LastPage()
     {
         LastButtonEnabled = false;
-        page = await judgeService.GetMaxPageNumberAsync();
+        page = await teamService.GetMaxPageNumberAsync();
         PageNumber = $"page\n{page}";
 
-        await LoadJudgesAsync();
+        await LoadTeamsAsync();
     }
-
     #endregion
 
     private async Task OnDeleteAsync(string? id)
     {
-        var result = await judgeService.DeleteAsync(id);
+        var result = await teamService.DeleteAsync(id);
 
-        var message = result.IsError ? result.FirstError.Description : "Judge deleted";
+        var message = result.IsError ? result.FirstError.Description : "Team deleted";
         var title = result.IsError ? "Error" : "Success";
 
         if (!result.IsError)
         {
-            var judge = Judges.SingleOrDefault(x => x.PublicId == id);
-            Judges.Remove(judge);
+            var team = Teams.SingleOrDefault(x => x.PublicId == id);
+            Teams.Remove(team);
 
-            if (Judges.Count == 0)
+            if (Teams.Count == 0)
             {
-                await LoadJudgesAsync();
+                await LoadTeamsAsync();
             }
         }
         await Application.Current.MainPage.DisplayAlert(title, message, "Ok");
     }
 
-    private async Task LoadJudgesAsync()
+    private async Task LoadTeamsAsync()
     {
-        var result = await judgeService.GetPagedAsync(page);
+        var result = await teamService.GetPagedAsync(page);
 
         if (result.IsError)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Judges not loaded!", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "Teams not loaded!", "OK");
             return;
         }
         var message = result.IsError ? result.FirstError.Description : "Done";
 
         await EnableButtonsAsync();
 
-        Judges = new ObservableCollection<JudgeModel>(result.Value);
+        TeamName = result.Value[0].Name.Value;
+        Participants = result.Value[0].Participants;
     }
 
     private async Task EnableButtonsAsync()
     {
         LastButtonEnabled = page != maxPageNumber;
         FirstButtonEnabled = page != 1;
-        NextButtonEnabled = page < await judgeService.GetMaxPageNumberAsync();
+        NextButtonEnabled = page < await teamService.GetMaxPageNumberAsync();
         PreviousButtonEnabled = page > 1;
     }
 
@@ -145,8 +150,8 @@ public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel
         {
             return;
         }
-        await judgeService.DeleteAsync(result.ToString());
-        await Application.Current.MainPage.DisplayAlert("Success", "Judge deleted!", "Ok");
-        await LoadJudgesAsync();
+        await teamService.DeleteAsync(result.ToString());
+        await Application.Current.MainPage.DisplayAlert("Success", "Team deleted!", "Ok");
+        await LoadTeamsAsync();
     }
 }

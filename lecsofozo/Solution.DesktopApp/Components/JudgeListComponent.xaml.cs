@@ -45,7 +45,6 @@ public partial class JudgeListComponent : ContentView
     }
 
 
-
     public IAsyncRelayCommand EditCommand => new AsyncRelayCommand(OnEditAsync);
 
     public JudgeListComponent()

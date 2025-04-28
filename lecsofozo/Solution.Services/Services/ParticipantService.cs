@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.Design;
+﻿using Solution.Database.Entities;
+using Solution.ValidationLibrary;
+using System.ComponentModel.Design;
 
 namespace Solution.Services.Services;
 
 public class ParticipantService(AppDbContext dbContext) : IParticipantService
 {
-    private int ROW_COUNT = 5;
+    private int ROW_COUNT = 10;
 
     public async Task<ErrorOr<ParticipantModel>> CreateAsync(ParticipantModel model)
     {
@@ -15,12 +17,12 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
             return Error.Conflict(description: "Participant already exists.");
         }
 
-        var entity = model.ToEntity();
+        ParticipantEntity entity = model.ToEntity();
 
         await dbContext.Participants.AddAsync(entity);
         await dbContext.SaveChangesAsync();
 
-        return new ParticipantModel(entity) 
+        return new ParticipantModel(entity)
         {
             Team = model.Team
         };

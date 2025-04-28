@@ -34,7 +34,7 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
     public IRelayCommand MemberAddingCommand => new RelayCommand(MemberAdd);
 
-    public IAsyncRelayCommand DeleteParticipantCommand => new AsyncRelayCommand<string>((publicId) => OnDeleteParticipantAsync(publicId));
+    public IAsyncRelayCommand DeleteCommand => new AsyncRelayCommand<string>((publicId) => OnDeleteParticipantAsync(publicId));
     #endregion
 
 
