@@ -10,7 +10,8 @@
              xmlns:components="clr-namespace:Solution.DesktopApp.Components"
              x:Class="Solution.DesktopApp.Views.CreateOrEditTeamView"
              x:DataType="viewModels:CreateOrEditTeamViewModel"
-             Title="">
+             Title="{Binding Title}">
+    
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
         <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />

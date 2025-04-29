@@ -10,6 +10,7 @@
              x:Class="Solution.DesktopApp.Views.CreateOrEditJudgeView"
              x:DataType="viewModels:CreateOrEditJudgeViewModel"
              Title="{Binding Title}">
+    
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
         <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />

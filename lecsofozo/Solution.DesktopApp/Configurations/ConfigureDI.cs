@@ -20,11 +20,11 @@ public static class ConfigureDI
         builder.Services.AddTransient<CreateOrEditJudgeView>();
         builder.Services.AddTransient<CreateOrEditJudgeViewModel>();
 
-        // builder.Services.AddTransient<RaceListView>();
-        // builder.Services.AddTransient<RaceListViewModel>();
+         //builder.Services.AddTransient<RaceListView>();
+         //builder.Services.AddTransient<RaceListViewModel>();
 
-        // builder.Services.AddTransient<CreateOrEditRaceViewModel>();
-        // builder.Services.AddTransient<CreateOrEditRaceView>();
+        builder.Services.AddTransient<CreateOrEditRaceViewModel>();
+        builder.Services.AddTransient<CreateOrEditRaceView>();
 
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService> ();
         builder.Services.AddScoped<ITeamService, TeamService> ();

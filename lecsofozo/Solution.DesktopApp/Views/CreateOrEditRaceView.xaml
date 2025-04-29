@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Solution.DesktopApp.ViewModels"
+             xmlns:views="clr-namespace:Solution.DesktopApp.Views"
+             xmlns:models="clr-namespace:Solution.Core.Models;assembly=Solution.Core"
+             xmlns:converters="clr-namespace:Solution.ValidationLibrary.Converters;assembly=Solution.ValidationLibrary"
+             xmlns:behaviors="clr-namespace:Solution.DesktopApp.Behaviors"
+             x:Class="Solution.DesktopApp.Views.CreateOrEditRaceView"
+             x:DataType="viewModels:CreateOrEditRaceViewModel"
+             Title="{Binding Title}">
+    
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing"/>
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout HorizontalOptions="Center">
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="Name" Style="{StaticResource InputLabel}"/>
+                <Entry Text="{Binding Name.Value}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding NameValidationCommand}" />
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="{Binding Name.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                   Style="{StaticResource ValidationErrorLabelStyle}" />
+        </VerticalStackLayout>
+
+        <StackLayout>
+            <Label Text="Date" Style="{x:StaticResource NameLabel}"/>
+            <DatePicker Date="{Binding Date.Value}" MaximumDate="{Binding MaxDateTime}" WidthRequest="{Binding DatePickerWidth}"/>
+        </StackLayout>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="Cities" Style="{StaticResource InputLabel}"/>
+            <Picker ItemsSource="{Binding Cities}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding Location.Value.City}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged"
+                                            Command="{Binding CityIndexChangedCommand}" />
+                </Picker.Behaviors>
+            </Picker>
+            <Label Text="{Binding Location.Value.City.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+           Style="{StaticResource ValidationErrorLabelStyle}" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/>
+        </VerticalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>
