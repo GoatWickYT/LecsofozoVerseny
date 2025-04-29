@@ -1,5 +1,7 @@
 
+using Microsoft.Maui.Controls.Internals;
 using Solution.Core.Interfaces;
+using Solution.Database.Migrations;
 using Solution.Services.Services;
 using System.Collections.ObjectModel;
 using Windows.Media.AppBroadcasting;
@@ -7,7 +9,7 @@ using Windows.Media.AppBroadcasting;
 namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
-public partial class TeamListViewModel(ITeamService teamService) : TeamModel(), IQueryAttributable
+public partial class TeamListViewModel(ITeamService teamService, IParticipantService participantService) : TeamModel(), IQueryAttributable
 {
     #region life cycle commands
     public IAsyncRelayCommand AppearingCommand => new AsyncRelayCommand(OnAppearingAsync);
@@ -18,16 +20,18 @@ public partial class TeamListViewModel(ITeamService teamService) : TeamModel(), 
     public IAsyncRelayCommand FirstPageCommand => new AsyncRelayCommand(FirstPage);
     public IAsyncRelayCommand NextPageCommand => new AsyncRelayCommand(NextPage);
     public IAsyncRelayCommand LastPageCommand => new AsyncRelayCommand(LastPage);
-    public IAsyncRelayCommand DeleteCommand => new AsyncRelayCommand<string>((id) => OnDeleteAsync(id));
+    public IAsyncRelayCommand DeleteCommand => new AsyncRelayCommand<string>((publicId) => OnDeleteAsync(publicId));
+
+    public IAsyncRelayCommand EditCommand => new AsyncRelayCommand(OnEditAsync);
 
     [ObservableProperty]
-    private static ObservableCollection<TeamModel> teams;
+    private static ICollection<TeamModel> teams;
 
     [ObservableProperty]
     private static ICollection<ParticipantModel> participants;
 
     [ObservableProperty]
-    private string teamName = string.Empty;
+    private TeamModel selectedTeam;
 
     [ObservableProperty]
     private string pageNumber = "page\n1";
@@ -106,20 +110,32 @@ public partial class TeamListViewModel(ITeamService teamService) : TeamModel(), 
 
         if (!result.IsError)
         {
-            var team = Teams.SingleOrDefault(x => x.PublicId == id);
+            var team = Teams.FirstOrDefault(x => x.PublicId == id);
             Teams.Remove(team);
 
-            if (Teams.Count == 0)
+            if(page != 0)
             {
-                await LoadTeamsAsync();
+                await PreviousPage();
             }
+
+            await LoadTeamsAsync();
         }
         await Application.Current.MainPage.DisplayAlert(title, message, "Ok");
     }
 
+    private async Task OnEditAsync()
+    {
+        ShellNavigationQueryParameters navigationQueryParameter = new ShellNavigationQueryParameters
+        {
+            {"Team", this.SelectedTeam }
+        };
+        Shell.Current.ClearNavigationStack();
+        await Shell.Current.GoToAsync(CreateOrEditTeamView.Name, navigationQueryParameter);
+    }
+
     private async Task LoadTeamsAsync()
     {
-        var result = await teamService.GetPagedAsync(page);
+        var result = await teamService.GetAllAsync();
 
         if (result.IsError)
         {
@@ -130,8 +146,19 @@ public partial class TeamListViewModel(ITeamService teamService) : TeamModel(), 
 
         await EnableButtonsAsync();
 
-        TeamName = result.Value[0].Name.Value;
-        Participants = result.Value[0].Participants;
+        Teams = result.Value;
+        if (Teams.Count != 0)
+        {
+            SelectedTeam = Teams.ToList()[page - 1];
+            SelectedTeam.Participants = await participantService.GetByTeamIdAsync(SelectedTeam.Id);
+            Participants = SelectedTeam.Participants;
+        }
+        else
+        {
+            SelectedTeam = null;
+            await Application.Current.MainPage.DisplayAlert("Error", "No teams in DB, go to the adding page", "OK");
+        }
+
     }
 
     private async Task EnableButtonsAsync()

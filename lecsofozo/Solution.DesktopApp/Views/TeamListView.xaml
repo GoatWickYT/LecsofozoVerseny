@@ -24,15 +24,27 @@
            Grid.Row="0"
            Style="{StaticResource PageTitle}"/>
 
-        <Label Text="{Binding TeamName}"
-            Grid.Row="1"
-            Style="{StaticResource PageTitle}"/>
+        <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center">
+            <Label Text="{Binding SelectedTeam.Name.Value}"
+                Style="{StaticResource PageTitle}"/>
+            <ImageButton Source="edit.png"
+                BackgroundColor="Transparent"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Command="{Binding EditCommand}"/>
+            <ImageButton Source="delete.png"
+                        BackgroundColor="Transparent"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Command="{Binding DeleteCommand}"
+                        CommandParameter="{Binding SelectedTeam.PublicId}"/>
+        </HorizontalStackLayout>
 
         <ScrollView Grid.Row="2">
             <CollectionView ItemsSource="{Binding Participants}"
                     Margin="50, 0">
                 <CollectionView.Header>
-                    <Border Style="{StaticResource TableHeader}">
+                    <Border>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="4*" />

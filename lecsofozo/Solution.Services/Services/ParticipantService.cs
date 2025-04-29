@@ -50,10 +50,11 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
         return entity is null ? Error.NotFound() : new ParticipantModel(entity);
     }
 
-    public async Task<List<ParticipantModel>> GetByTeamIdAsync(string teamId)
+    public async Task<List<ParticipantModel>> GetByTeamIdAsync(uint teamId)
     {
-        var entities = await dbContext.Participants.Include(x => x.Team).AsNoTracking().Where(x => x.PublicId == teamId).ToListAsync();
+        var entities = await dbContext.Participants.Include(x => x.Team).AsNoTracking().Where(x => x.TeamId == teamId).ToListAsync();
         List<ParticipantModel> result = new List<ParticipantModel>();
+
         foreach (var participant in entities)
         {
             result.Add(new ParticipantModel(participant));

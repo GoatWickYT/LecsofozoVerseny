@@ -35,7 +35,6 @@ public class TeamService(AppDbContext dbContext) : ITeamService
 
     public async Task<ErrorOr<List<TeamModel>>> GetAllAsync() =>
         await dbContext.Teams.AsNoTracking()
-                             .Include(x => x.Participants)
                              .Select(t => new TeamModel(t))
                              .ToListAsync();
 
@@ -53,32 +52,17 @@ public class TeamService(AppDbContext dbContext) : ITeamService
                               .CountAsync();
     }
 
-    public async Task<ErrorOr<List<TeamModel>>> GetPagedAsync(int page = 0)
+    public async Task<ErrorOr<TeamModel>> GetPagedAsync(int page = 0)
     {
         page = page < 0 ? 0 : page - 1;
 
         var result = await dbContext.Teams.AsNoTracking()
                                           .Skip(page)
                                           .Take(1)
-                                          .Select(t => new TeamModel
-                                          {
-                                              Id = t.Id,
-                                              PublicId = t.PublicId,
-                                              Name = new ValidatableObject<string> { Value = t.Name },
-                                              Participants = dbContext.Participants.AsNoTracking()
-                                                    .Where(p => p.TeamId == t.Id)
-                                                    .Select(p => new ParticipantModel
-                                                    {
-                                                        Id = p.Id,
-                                                        PublicId = p.PublicId,
-                                                        Name = new ValidatableObject<string> { Value = p.Name },
-                                                        ImageId = p.ImageId,
-                                                        WebContentLink = p.WebContentLink
-                                                    }).ToList()
-                                          })
-                                          .ToListAsync();
+                                          .Select(t => new TeamModel(t))
+                                          .FirstAsync();
 
-        return result.Any() ? result : Error.NotFound();
+        return result != null ? result : Error.NotFound();
     }
 
     public async Task<ErrorOr<Success>> UpdateAsync(TeamModel model)

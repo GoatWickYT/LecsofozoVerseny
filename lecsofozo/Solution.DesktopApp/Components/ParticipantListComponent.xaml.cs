@@ -30,20 +30,8 @@ public partial class ParticipantListComponent : ContentView
         set => SetValue(CommandParameterProperty, value);
     }
 
-    public IAsyncRelayCommand EditCommand => new AsyncRelayCommand(OnEditAsync);
-
     public ParticipantListComponent()
     {
         InitializeComponent();
-    }
-
-    private async Task OnEditAsync()
-    {
-        ShellNavigationQueryParameters navigationQueryParameter = new ShellNavigationQueryParameters
-        {
-            {"Participant", this.Participant }
-        };
-        Shell.Current.ClearNavigationStack();
-        await Shell.Current.GoToAsync(CreateOrEditTeamView.Name, navigationQueryParameter);
     }
 }

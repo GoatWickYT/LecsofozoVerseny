@@ -4,32 +4,28 @@
              x:Class="Solution.DesktopApp.Components.ParticipantListComponent"
              x:Name="this">
     
-    <Border Style="{StaticResource TableData}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0"
-               HorizontalOptions="Center"
-               WidthRequest="100">
-                <Image.Source>
-                    <UriImageSource Uri="{Binding Participant, Source={x:Reference this}}"
-                                CacheValidity="10:00:00:00" />
-                </Image.Source>
-            </Image>
-            <BoxView Grid.Column="1"
-                 BackgroundColor="Black" />
-            <Label Text="{Binding Participant.Name.Value , Source={x:Reference this}}"
-               Grid.Column="2"
-               Style="{StaticResource TableDataText}"/>
-            <ImageButton Grid.Column="2"
-                     Source="edit.png"
-                     BackgroundColor="Transparent"
-                     VerticalOptions="Center"
-                     HorizontalOptions="Center"
-                     Command="{Binding EditCommand, Source={x:Reference this}}"/>
-        </Grid>
-    </Border>
+            <Border Grid.Column="0" Margin="0,0,2,0">
+                <Image 
+                       HorizontalOptions="Center"
+                       WidthRequest="100">
+                    <Image.Source>
+                        <UriImageSource Uri="{Binding Participant, Source={x:Reference this}}"
+                                        CacheValidity="10:00:00:00" />
+                    </Image.Source>
+                </Image>
+            </Border>
+            <Border Grid.Column="1" Margin="2,0,0,0">
+                <Label Text="{Binding Participant.Name.Value, Source={x:Reference this}}"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="100"
+                       VerticalTextAlignment="Center"
+                       FontSize="Large"/>
+            </Border>
+    </Grid>
 </ContentView>
