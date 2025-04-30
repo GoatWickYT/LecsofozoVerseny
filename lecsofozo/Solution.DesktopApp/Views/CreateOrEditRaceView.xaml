@@ -40,22 +40,26 @@
             <DatePicker Date="{Binding Date.Value}" MaximumDate="{Binding MaxDateTime}" WidthRequest="{Binding DatePickerWidth}"/>
         </StackLayout>
 
-        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
-            <Label Text="Cities" Style="{StaticResource InputLabel}"/>
-            <Picker ItemsSource="{Binding Cities}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding Location.Value.City}">
-                <Picker.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged"
-                                            Command="{Binding CityIndexChangedCommand}" />
-                </Picker.Behaviors>
-            </Picker>
-            <Label Text="{Binding Location.Value.City.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
-           Style="{StaticResource ValidationErrorLabelStyle}" />
-        </VerticalStackLayout>
+        <StackLayout VerticalOptions="Center"  Padding="10" HorizontalOptions="FillAndExpand" Margin="0,20,0,0" >
+            <StackLayout>
+                <SearchBar  x:Name="Searchbar">
+                </SearchBar>
+            </StackLayout>
+            <StackLayout>
+                <ListView  x:Name="ListView"  ItemsSource="{Binding Location.Value.City.Value.Name}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Label Text="{Binding .}"/>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </StackLayout>
 
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
-            <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/>
+            <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/> 
         </VerticalStackLayout>
 
     </VerticalStackLayout>

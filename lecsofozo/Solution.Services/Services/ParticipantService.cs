@@ -22,10 +22,7 @@ public class ParticipantService(AppDbContext dbContext) : IParticipantService
         await dbContext.Participants.AddAsync(entity);
         await dbContext.SaveChangesAsync();
 
-        return new ParticipantModel(entity)
-        {
-            Team = model.Team
-        };
+        return new ParticipantModel(entity);
     }
 
     public async Task<ErrorOr<Success>> DeleteAsync(string id)

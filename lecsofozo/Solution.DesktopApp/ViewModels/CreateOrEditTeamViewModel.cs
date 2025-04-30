@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.UI.Xaml.Controls;
 using Solution.Core.Models;
 using Solution.Database.Migrations;
+using Solution.ValidationLibrary;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Appointments.AppointmentsProvider;
 using Windows.ApplicationModel.VoiceCommands;
@@ -66,27 +67,27 @@ public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,
 
         Team.Id = team.Id;
         Team.Name.Value = team.Name.Value;
+        Team.PublicId = team.PublicId;
         var participants = await appDbContext.Participants.Where(x => x.TeamId == team.Id).ToListAsync();
 
         foreach (var participant in participants)
         {
-            ParticipantModel temp = new ParticipantModel();
-            temp.Id = participant.Id;
-            temp.PublicId = participant.PublicId;
-            temp.Name.Value = participant.Name;
-            temp.ImageId = participant.ImageId;
-            temp.WebContentLink = participant.WebContentLink;
-            temp.Team = new TeamModel(participant.Team);
-
-            if (!string.IsNullOrEmpty(participant.WebContentLink))
+            Participants.Add(new ParticipantModel
             {
-                temp.Image = new UriImageSource
-                {
-                    Uri = new Uri(participant.WebContentLink), CacheValidity = new TimeSpan(10,0,0,0)
-                };
-            };
+                Id = participant.Id,
+                PublicId = participant.PublicId,
+                Name = new ValidatableObject<string> { Value = participant.Name },
+                ImageId = participant.ImageId,
+                WebContentLink = participant.WebContentLink,
+                Image = !string.IsNullOrEmpty(participant.WebContentLink) ? 
+                         new UriImageSource
+                         {
+                             Uri = new Uri(participant.WebContentLink),
+                             CacheValidity = new TimeSpan(10, 0, 0, 0)
+                         } :
+                         null
 
-            Participants.Add(temp);
+            });
         };
 
 

@@ -12,9 +12,9 @@
             <Border Grid.Column="0" Margin="0,0,2,0">
                 <Image 
                        HorizontalOptions="Center"
-                       WidthRequest="100">
+                       WidthRequest="300">
                     <Image.Source>
-                        <UriImageSource Uri="{Binding Participant, Source={x:Reference this}}"
+                        <UriImageSource Uri="{Binding Participant.WebContentLink, Source={x:Reference this}}"
                                         CacheValidity="10:00:00:00" />
                     </Image.Source>
                 </Image>

@@ -36,7 +36,6 @@ public partial class ParticipantModel
         this.ImageId = entity.ImageId;
         this.WebContentLink = entity.WebContentLink;
         this.Name.Value = entity.Name;
-        this.Team = new TeamModel(entity.Team);
     }
 
     public ParticipantEntity ToEntity()

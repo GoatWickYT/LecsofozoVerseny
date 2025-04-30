@@ -69,9 +69,7 @@ public class TeamService(AppDbContext dbContext) : ITeamService
     {
         var result = await dbContext.Teams.AsNoTracking()
                                           .Where(x => x.PublicId == model.PublicId)
-                                          .ExecuteUpdateAsync(x => x.SetProperty(p => p.PublicId, model.PublicId)
-                                                                    .SetProperty(p => p.Participants, model.Participants.Select(x => x.ToEntity()).ToList())
-                                                                    .SetProperty(p => p.Name, model.Name.Value));
+                                          .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, model.Name.Value));
 
         return result > 0 ? Result.Success : Error.NotFound();
     }
