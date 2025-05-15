@@ -39,25 +39,21 @@
             <Label Text="Date" Style="{x:StaticResource NameLabel}"/>
             <DatePicker Date="{Binding Date.Value}" MaximumDate="{Binding MaxDateTime}" WidthRequest="{Binding DatePickerWidth}"/>
         </StackLayout>
-
-        <StackLayout VerticalOptions="Center"  Padding="10" HorizontalOptions="FillAndExpand" Margin="0,20,0,0" >
-            <StackLayout>
-                <SearchBar  x:Name="Searchbar">
-                </SearchBar>
-            </StackLayout>
-            <StackLayout>
-                <ListView  x:Name="ListView"  ItemsSource="{Binding Location.Value.City.Value.Name}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Label Text="{Binding .}"/>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </StackLayout>
-
+        <VerticalStackLayout>
+            
+        <SearchBar x:Name="searchBar">
+                <SearchBar.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchBarChanged}" CommandParameter="{Binding Text, x:DataType='SearchBar', Source={x:Reference searchBar}}"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
+        <ListView ItemsSource="{Binding SearchedCities}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:CityModel">
+                        <TextCell Text="{Binding Name}"></TextCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </VerticalStackLayout>
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/> 
         </VerticalStackLayout>

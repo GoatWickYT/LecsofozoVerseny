@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using System.Windows.Input;
 
 namespace Solution.DesktopApp.ViewModels;
 
@@ -17,23 +18,38 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     public IRelayCommand NameValidationCommand => new RelayCommand(() => this.Name.Validate());
     public IRelayCommand StreetValidation => new RelayCommand(() => this.Location.Value.Street.Validate());
     public IRelayCommand HouseNumberValidation => new RelayCommand(() => this.Location.Value.HouseNumber.Validate());
-    public IRelayCommand CityIndexChangedCommand => new RelayCommand(() => this.Location.Value.City.Validate());
-
     #endregion
+    public IRelayCommand SearchBarChanged => new RelayCommand<string>((string query) => SearchCities(query));
+
+    [ObservableProperty]
+    private ICollection<CityModel> searchedCities = new List<CityModel>();
+
+    [ObservableProperty]
+    private IList<CityModel> cities = new List<CityModel>();
 
     public DateTime MaxDateTime => DateTime.Now;
 
     [ObservableProperty]
     private double datePickerWidth;
 
-    [ObservableProperty]
-    private IList<CityModel> cities = [];
-
-
-
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         await Task.Run(LoadCitiesAsync);
+    }
+
+    private void SearchCities(string query = "")
+    {
+        if (query is not null)
+        {
+            SearchedCities = new List<CityModel>();
+            foreach (var city in Cities)
+            {
+                if (city.Name.Contains(query))
+                {
+                    SearchedCities.Add(city);
+                }
+            }
+        }
     }
 
     private async Task OnAppearingAsync() { }
