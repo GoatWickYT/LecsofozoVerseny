@@ -39,21 +39,32 @@
             <Label Text="Date" Style="{x:StaticResource NameLabel}"/>
             <DatePicker Date="{Binding Date.Value}" MaximumDate="{Binding MaxDateTime}" WidthRequest="{Binding DatePickerWidth}"/>
         </StackLayout>
+
         <VerticalStackLayout>
-            
-        <SearchBar x:Name="searchBar">
-                <SearchBar.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchBarChanged}" CommandParameter="{Binding Text, x:DataType='SearchBar', Source={x:Reference searchBar}}"/>
-                </SearchBar.Behaviors>
-            </SearchBar>
-        <ListView ItemsSource="{Binding SearchedCities}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:CityModel">
-                        <TextCell Text="{Binding Name}"></TextCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <Entry Text="{Binding SearchQuery}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchBarChanged}" CommandParameter="{Binding SearchQuery}" />
+                </Entry.Behaviors>
+            </Entry>
+            <ListView ItemsSource="{Binding SearchedCities}"
+                      ItemSelected="{Binding SelectedCity}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:CityModel">
+                        <ViewCell>
+                            <Label>
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="Name"/>
+                                        <Binding Path="PostalCode"/>
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </VerticalStackLayout>
+        
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/> 
         </VerticalStackLayout>

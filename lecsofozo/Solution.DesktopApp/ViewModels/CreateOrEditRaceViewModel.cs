@@ -1,5 +1,8 @@
 
+using CommunityToolkit.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Solution.DesktopApp.ViewModels;
@@ -22,7 +25,13 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     public IRelayCommand SearchBarChanged => new RelayCommand<string>((string query) => SearchCities(query));
 
     [ObservableProperty]
-    private ICollection<CityModel> searchedCities = new List<CityModel>();
+    public CityModel selectedCity = new CityModel();
+
+    [ObservableProperty]
+    private ObservableCollection<CityModel> searchedCities = new ObservableCollection<CityModel>();
+
+    [ObservableProperty]
+    private string searchQuery;
 
     [ObservableProperty]
     private IList<CityModel> cities = new List<CityModel>();
@@ -37,19 +46,18 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         await Task.Run(LoadCitiesAsync);
     }
 
-    private void SearchCities(string query = "")
+    private void SearchCities(string query)
     {
-        if (query is not null)
+        if (query.Length > 1 && !query.IsNullOrEmpty())
         {
-            SearchedCities = new List<CityModel>();
-            foreach (var city in Cities)
-            {
-                if (city.Name.Contains(query))
-                {
-                    SearchedCities.Add(city);
-                }
-            }
+            SearchedCities = new ObservableCollection<CityModel>(Cities.Where(x => (!query.IsNumeric() && x.Name.ToLower().Contains(query)) || (query.IsNumeric() && x.PostalCode.ToString().Contains(query))));
         }
+    }
+
+    public void SelectCity(CityModel model)
+    {
+        selectedCity = model;
+        SearchQuery = model.Name;
     }
 
     private async Task OnAppearingAsync() { }
