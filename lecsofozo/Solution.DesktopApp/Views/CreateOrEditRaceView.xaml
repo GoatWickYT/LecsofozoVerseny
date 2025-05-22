@@ -19,6 +19,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+            <toolkit:SelectedItemEventArgsConverter x:Key="SelectedItemEventArgsConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -43,11 +44,19 @@
         <VerticalStackLayout>
             <Entry Text="{Binding SearchQuery}">
                 <Entry.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding SearchBarChanged}" CommandParameter="{Binding SearchQuery}" />
+                    <toolkit:EventToCommandBehavior EventName="TextChanged"
+                                                    Command="{Binding SearchBarChanged}"
+                                                    CommandParameter="{Binding SearchQuery}" />
                 </Entry.Behaviors>
             </Entry>
             <ListView ItemsSource="{Binding SearchedCities}"
-                      ItemSelected="{Binding SelectedCity}">
+                      VerticalScrollBarVisibility="Always"
+                      SelectedItem="{Binding SelectedCity}">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="ItemSelected"
+                                                    Command="{Binding ItemSelectedCommand}"
+                                                    EventArgsConverter="{StaticResource SelectedItemEventArgsConverter}" />
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:CityModel">
                         <ViewCell>
