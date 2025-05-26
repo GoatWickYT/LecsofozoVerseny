@@ -17,6 +17,6 @@ public partial class CreateOrEditRaceView : ContentPage
     private void OnSizeChanged(object? sender, EventArgs e)
     {
         ContentPage page = sender as ContentPage;
-        ViewModel.DatePickerWidth = page.Window.Width - 100;
+        ViewModel.DatePickerWidth = page.Window.Width - 1000;
     }
 }

@@ -24,7 +24,6 @@
     </ContentPage.Resources>
 
     <VerticalStackLayout HorizontalOptions="Center">
-
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Label Text="Name" Style="{StaticResource InputLabel}"/>
                 <Entry Text="{Binding Name.Value}">
@@ -36,12 +35,13 @@
                    Style="{StaticResource ValidationErrorLabelStyle}" />
         </VerticalStackLayout>
 
-        <StackLayout>
-            <Label Text="Date" Style="{x:StaticResource NameLabel}"/>
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="Date" Style="{StaticResource InputLabel}"/>
             <DatePicker Date="{Binding Date.Value}" MaximumDate="{Binding MaxDateTime}" WidthRequest="{Binding DatePickerWidth}"/>
-        </StackLayout>
+        </VerticalStackLayout>
 
-        <VerticalStackLayout>
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="City" Style="{StaticResource InputLabel}"/>
             <Entry Text="{Binding SearchQuery}">
                 <Entry.Behaviors>
                     <toolkit:EventToCommandBehavior EventName="TextChanged"
@@ -73,7 +73,113 @@
                 </ListView.ItemTemplate>
             </ListView>
         </VerticalStackLayout>
-        
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="Street" Style="{StaticResource InputLabel}"/>
+            <Entry Text="{Binding Location.Value.Street.Value}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding StreetValidationCommand}" />
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="{Binding Location.Value.Street.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                   Style="{StaticResource ValidationErrorLabelStyle}"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <Label Text="Housenumber" Style="{StaticResource InputLabel}"/>
+            <Entry Text="{Binding Location.Value.HouseNumber.Value}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding HouseNumberValidationCommand}" />
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="{Binding Location.Value.HouseNumber.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+           Style="{StaticResource ValidationErrorLabelStyle}"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <BoxView HeightRequest="1" Color="Gray"/>
+            <HorizontalStackLayout Spacing="5">
+                <Label Text="Selected teams:" FontSize="Medium"/>
+                <Label Text="{Binding SelectedTeamNames}" FontSize="Medium"/>
+            </HorizontalStackLayout>
+            <BoxView HeightRequest="1" Color="Gray"/>
+
+            <CollectionView ItemsSource="{Binding AvailableTeams}"
+                            SelectionMode="Multiple"
+                            SelectedItems="{Binding SelectedTeams}"
+                            SelectionChangedCommand="{Binding TeamSelectedCommand}"
+                            Margin="10"
+                            HorizontalOptions="Center">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TeamModel">
+                        <Border
+                            Margin="10"
+                            Padding="10"
+                            StrokeShape="RoundRectangle 10">
+                            <Label x:Name="teamName" Text="{Binding Name.Value}" FontSize="Medium"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup>
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Green"/>
+                                            <Setter TargetName="teamName" Property="Label.TextColor" Value="White"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Black"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>  
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+            <BoxView HeightRequest="1" Color="Gray"/>
+            <HorizontalStackLayout Spacing="5">
+                <Label Text="Selected judges:" FontSize="Medium"/>
+                <Label Text="{Binding SelectedJudgeNames}" FontSize="Medium"/>
+            </HorizontalStackLayout>
+            <BoxView HeightRequest="1" Color="Gray"/>
+
+            <CollectionView ItemsSource="{Binding AvailableJudges}"
+                    SelectionMode="Multiple"
+                    SelectedItems="{Binding SelectedJudges}"
+                    SelectionChangedCommand="{Binding JudgeSelectedCommand}"
+                    Margin="10"
+                    HorizontalOptions="Center">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:JudgeModel">
+                        <Border
+                    Margin="10"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 10">
+                            <Label x:Name="judgeName" Text="{Binding Name.Value}" FontSize="Medium"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup>
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Blue"/>
+                                            <Setter TargetName="judgeName" Property="Label.TextColor" Value="White"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Black"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/> 
         </VerticalStackLayout>
