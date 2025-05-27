@@ -132,11 +132,31 @@
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                        </Border>  
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
+
+        <ListView ItemsSource="{Binding PointsWithTeam}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:PointModel">
+                    <ViewCell>
+                        <VerticalStackLayout Style="{StaticResource FormLineContainer}" Padding="10">
+                            <Label Text="{Binding Team.Value.Name.Value}" FontAttributes="Bold"/>
+                            <Entry Text="{Binding Value.Value}">
+                                <Entry.Behaviors>
+                                    <behaviors:EntryIntegerBehavior/>
+                                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding Source='viewModels:CreateOrEditRaceViewModel', Path=BindingContext.ValueValidationCommand}"/>
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Label Text="{Binding Value.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                                   Style="{StaticResource ValidationErrorLabelStyle}"/>
+                        </VerticalStackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <BoxView HeightRequest="1" Color="Gray"/>

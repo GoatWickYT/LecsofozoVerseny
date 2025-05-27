@@ -1,5 +1,7 @@
 using CommunityToolkit.Common;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using Solution.ValidationLibrary;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -19,6 +21,7 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     public IRelayCommand NameValidationCommand => new RelayCommand(() => this.Name.Validate());
     public IRelayCommand StreetValidationCommand => new RelayCommand(() => this.Location.Value.Street.Validate());
     public IRelayCommand HouseNumberValidationCommand => new RelayCommand(() => this.Location.Value.HouseNumber.Validate());
+    public IRelayCommand ValueValidationCommand => new RelayCommand(() => this.PointsWithTeam.ToList().ForEach(x => x.Value.Validate()));
     #endregion
     public IRelayCommand SearchBarChanged => new RelayCommand<string>((string query) => SearchCities(query));
 
@@ -54,13 +57,27 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
 
     public ObservableCollection<object> SelectedTeams { get; set; } = [];
 
+    public ObservableCollection<PointModel> PointsWithTeam { get; set; } = [];
+
+    public ObservableCollection<uint> PointValues { get; set; } = [];
+
     private void TeamSelected()
     {
-        foreach ( var team in SelectedTeams)
+        if(SelectedTeams.Count == 0)
         {
-            if(team is TeamModel selectedTeam)
+            PointsWithTeam.Clear();
+        }
+
+        PointsWithTeam.Clear();
+        foreach (TeamModel team in SelectedTeams)
+        {
+            if (team is TeamModel selectedTeam)
             {
-                this.Teams.Add(selectedTeam);
+                PointsWithTeam.Add(new PointModel
+                {
+                    Team = new ValidatableObject<TeamModel> { Value = team },
+                    Value = new ValidatableObject<uint>(),
+                });
             }
         }
 

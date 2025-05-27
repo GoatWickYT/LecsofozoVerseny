@@ -15,6 +15,8 @@ public class PointModel
         Value = new ValidatableObject<uint>();
         Team = new ValidatableObject<TeamModel>();
         Race = new ValidatableObject<RaceModel>();
+
+        AddValidators();
     }
 
     public PointModel(PointEntity entity)
@@ -39,5 +41,10 @@ public class PointModel
         entity.Value = this.Value.Value;
         entity.RaceId = this.Race.Value.Id;
         entity.TeamId = this.Team.Value.Id;
+    }
+
+    private void AddValidators()
+    {
+        this.Value.Validations.Add(new NullableIntegerRule<uint> { ValidationMessage = "Point is required." });
     }
 }
