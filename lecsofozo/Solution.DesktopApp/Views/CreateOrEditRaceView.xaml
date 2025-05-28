@@ -147,7 +147,7 @@
                             <Entry Text="{Binding Value.Value}">
                                 <Entry.Behaviors>
                                     <behaviors:EntryIntegerBehavior/>
-                                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding Source='viewModels:CreateOrEditRaceViewModel', Path=BindingContext.ValueValidationCommand}"/>
+                                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding ValueValidationCommand}"/>
                                 </Entry.Behaviors>
                             </Entry>
                             <Label Text="{Binding Value.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
