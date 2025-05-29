@@ -18,7 +18,7 @@ public class EntryIntegerBehavior : Behavior<Entry>
         entry.TextChanged -= OnTextChanged;
     }
 
-    private void OnTextChanged(object? sender, TextChangedEventArgs e)
+    private void OnTextChanged(object? sender, Microsoft.Maui.Controls.TextChangedEventArgs e)
     {
         Entry entry = sender as Entry;
 

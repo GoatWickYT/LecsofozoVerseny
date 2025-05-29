@@ -1,16 +1,4 @@
-﻿using ErrorOr;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.UI.Xaml.Controls;
-using Solution.Core.Models;
-using Solution.Database.Migrations;
-using Solution.ValidationLibrary;
-using System.Collections.ObjectModel;
-using Windows.ApplicationModel.Appointments.AppointmentsProvider;
-using Windows.ApplicationModel.VoiceCommands;
-using Windows.Services.Maps;
-
-namespace Solution.DesktopApp.ViewModels;
+﻿namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
 public partial class CreateOrEditTeamViewModel(AppDbContext appDbContext,

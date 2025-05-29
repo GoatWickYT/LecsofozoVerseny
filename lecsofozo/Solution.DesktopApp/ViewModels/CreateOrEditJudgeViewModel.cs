@@ -1,7 +1,4 @@
-﻿
-using Solution.Services.Services;
-
-namespace Solution.DesktopApp.ViewModels;
+﻿namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
 public partial class CreateOrEditJudgeViewModel(AppDbContext appDbContext,

@@ -23,6 +23,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <ScrollView>
+        
     <VerticalStackLayout HorizontalOptions="Center">
         <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Label Text="Name" Style="{StaticResource InputLabel}"/>
@@ -146,9 +148,8 @@
                             <Label Text="{Binding Team.Value.Name.Value}" FontAttributes="Bold"/>
                             <Entry Text="{Binding Value.Value}">
                                 <Entry.Behaviors>
-                                    <behaviors:EntryIntegerBehavior/>
-                                    <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding ValueValidationCommand}"/>
-                                </Entry.Behaviors>
+                                        <behaviors:EntryIntegerBehavior/>
+                                    </Entry.Behaviors>
                             </Entry>
                             <Label Text="{Binding Value.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
                                    Style="{StaticResource ValidationErrorLabelStyle}"/>
@@ -171,7 +172,8 @@
                     SelectedItems="{Binding SelectedJudges}"
                     SelectionChangedCommand="{Binding JudgeSelectedCommand}"
                     Margin="10"
-                    HorizontalOptions="Center">
+                    HorizontalOptions="Center"
+                    >
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:JudgeModel">
                         <Border
@@ -205,4 +207,5 @@
         </VerticalStackLayout>
 
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

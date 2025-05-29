@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Solution.DesktopApp.ViewModels;
+﻿namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
 public partial class JudgeListViewModel(IJudgeService judgeService) : JudgeModel(), IQueryAttributable

@@ -1,9 +1,4 @@
-using CommunityToolkit.Common;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
-using Solution.ValidationLibrary;
-using System.Collections.ObjectModel;
-using System.Linq;
+using CommunityToolkit.Maui.Core.Extensions;
 
 namespace Solution.DesktopApp.ViewModels;
 
@@ -55,6 +50,14 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     [ObservableProperty]
     private string selectedTeamNames;
 
+    [ObservableProperty]
+    private IList<JudgeModel> availableJudges = new List<JudgeModel>();
+
+    [ObservableProperty]
+    private string selectedJudgeNames;
+
+    public ObservableCollection<object> SelectedJudges { get; set; } = [];
+
     public ObservableCollection<object> SelectedTeams { get; set; } = [];
 
     public ObservableCollection<PointModel> PointsWithTeam { get; set; } = [];
@@ -84,13 +87,6 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         SelectedTeamNames = string.Join(", ", SelectedTeams.OfType<TeamModel>().Select(t => t.Name.Value));
     }
 
-    [ObservableProperty]
-    private IList<JudgeModel> availableJudges = new List<JudgeModel>();
-
-    [ObservableProperty]
-    private string selectedJudgeNames;
-
-    public ObservableCollection<object> SelectedJudges { get; set; } = [];
 
     private void JudgeSelected()
     {

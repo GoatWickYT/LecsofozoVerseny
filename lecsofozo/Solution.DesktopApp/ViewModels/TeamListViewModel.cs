@@ -1,11 +1,3 @@
-
-using Microsoft.Maui.Controls.Internals;
-using Solution.Core.Interfaces;
-using Solution.Database.Migrations;
-using Solution.Services.Services;
-using System.Collections.ObjectModel;
-using Windows.Media.AppBroadcasting;
-
 namespace Solution.DesktopApp.ViewModels;
 
 [ObservableObject]
