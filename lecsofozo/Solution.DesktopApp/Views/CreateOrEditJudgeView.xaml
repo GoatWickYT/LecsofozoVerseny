@@ -23,21 +23,27 @@
     </ContentPage.Resources>
     
     <VerticalStackLayout>
-        <Grid>
+        <Grid HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="800"/>
             </Grid.ColumnDefinitions>
             
-            <VerticalStackLayout Grid.Column="0">
-                <StackLayout Orientation="Vertical"
-                     Grid.Column="0"
-                     Margin="40">
+                <VerticalStackLayout Grid.Row="3"
+                                     Grid.Column="0"
+                                     Margin="40">
                     <Border Stroke="{AppThemeBinding Light=Black, Dark=White}"
-                    StrokeThickness="2"
-                    Padding="0"
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand">
+                            StrokeThickness="2"
+                            Padding="0"
+                            WidthRequest="400"
+                            HeightRequest="400"
+                            StrokeShape="RoundRectangle 25,25,0,0">
                         <Image 
                             MinimumHeightRequest="400"
                             MaximumHeightRequest="400"
@@ -45,15 +51,13 @@
                             MaximumWidthRequest="400"
                             Source="{Binding Image}"></Image>
                     </Border>
-                    <Button Text="Select an Image"
-                    Command="{Binding ImageSelectCommand}">
+                    <Border Padding="0" StrokeThickness="2" Stroke="{AppThemeBinding Light=Black, Dark=White}" StrokeShape="RoundRectangle 0,0,25,25" WidthRequest="400">
+                        <Button Text="Select the judge's image" TextColor="White" BackgroundColor="Black" FontAttributes="Bold" FontSize="Medium" CornerRadius="0" Command="{Binding ImageSelectCommand}"/>
+                    </Border>
 
-                    </Button>
-                </StackLayout>
-            </VerticalStackLayout>
-            <VerticalStackLayout Grid.Column="1">
+                </VerticalStackLayout>
                 
-                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}" Grid.Row="0" Grid.Column="0">
                     <Label Text="Name" Style="{StaticResource InputLabel}"></Label>
                     <Entry Text="{Binding Name.Value}">
                         <Entry.Behaviors>
@@ -64,7 +68,7 @@
                    Style="{StaticResource ValidationErrorLabelStyle}" />
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}" Grid.Row="1" Grid.Column="0">
                     <Label Text="E-mail" Style="{StaticResource InputLabel}"></Label>
                     <Entry Text="{Binding Email.Value}">
                         <Entry.Behaviors>
@@ -75,7 +79,7 @@
                    Style="{StaticResource ValidationErrorLabelStyle}" />
                 </VerticalStackLayout>
                 
-                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}" Grid.Row="2" Grid.Column="0">
                     <Label Text="Phone Number" Style="{StaticResource InputLabel}"></Label>
                     <Entry Text="{Binding PhoneNumber.Value}">
                         <Entry.Behaviors>
@@ -86,11 +90,10 @@
                    Style="{StaticResource ValidationErrorLabelStyle}" />
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+                <VerticalStackLayout Style="{StaticResource FormLineContainer}" Grid.Row="4" Grid.Column="0">
                     <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/>
                 </VerticalStackLayout>
 
-            </VerticalStackLayout>
         </Grid>
     </VerticalStackLayout>
 </ContentPage>
