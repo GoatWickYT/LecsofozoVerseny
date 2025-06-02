@@ -2,7 +2,7 @@
 
 public interface IRaceService
 {
-    Task<ErrorOr<RaceModel>> CreateAsync(RaceModel model);
+    Task<ErrorOr<RaceModel>> CreateAsync(RaceModel model, List<PointModel> TeamsWithPoints);
     Task<ErrorOr<Success>> UpdateAsync(RaceModel model);
     Task<ErrorOr<Success>> DeleteAsync(string id);
     Task<ErrorOr<RaceModel>> GetByIdAsync(string id);

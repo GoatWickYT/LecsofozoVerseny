@@ -15,6 +15,8 @@ public partial class AppShellViewModel
 
     public IAsyncRelayCommand AddNewRaceCommand => new AsyncRelayCommand(OnAddNewRaceAsync);
 
+    public IAsyncRelayCommand ListRaceCommand => new AsyncRelayCommand(OnListRaceAsync);
+
     private async Task OnExitAsync() => Application.Current.Quit();
 
     private async Task OnAddNewTeamAsync()
@@ -44,5 +46,11 @@ public partial class AppShellViewModel
     {
         Shell.Current.ClearNavigationStack();
         await Shell.Current.GoToAsync(CreateOrEditRaceView.Name);
+    }
+
+    private async Task OnListRaceAsync()
+    {
+        Shell.Current.ClearNavigationStack();
+        await Shell.Current.GoToAsync(RaceListView.Name);
     }
 }

@@ -1,4 +1,5 @@
-using CommunityToolkit.Maui.Core.Extensions;
+using ErrorOr;
+using Solution.Services.Services;
 
 namespace Solution.DesktopApp.ViewModels;
 
@@ -18,19 +19,36 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     public IRelayCommand HouseNumberValidationCommand => new RelayCommand(() => this.Location.Value.HouseNumber.Validate());
     public IRelayCommand ValueValidationCommand => new RelayCommand(() => this.PointsWithTeam.ToList().ForEach(x => x.Value.Validate()));
     #endregion
+
+    #region event commands
+    public IAsyncRelayCommand SubmitCommand => new AsyncRelayCommand(OnSubmitAsync);
+
     public IRelayCommand SearchBarChanged => new RelayCommand<string>((string query) => SearchCities(query));
 
-    public IRelayCommand TeamSelectedCommand => new RelayCommand(() => TeamSelected());
+    public IRelayCommand TeamSelectedCommand => new RelayCommand(TeamSelected);
 
-    public IRelayCommand JudgeSelectedCommand => new RelayCommand(() => JudgeSelected());
+    public IRelayCommand ItemSelectedCommand => new RelayCommand(CitySelected);
 
-    public IRelayCommand ItemSelectedCommand => new RelayCommand(() => CitySelected());
+    public IRelayCommand SelectedJudgeCommand => new RelayCommand(JudgeSelected);
+    #endregion
+
+    private delegate Task ButtonActionDelegate();
+    private ButtonActionDelegate asyncButtonAction;
 
     [ObservableProperty]
     private CityModel selectedCity = new CityModel();
 
     [ObservableProperty]
     private ObservableCollection<CityModel> searchedCities = new ObservableCollection<CityModel>();
+
+    [ObservableProperty]
+    private JudgeModel firstJudge = new JudgeModel();
+
+    [ObservableProperty]
+    private JudgeModel secondJudge = new JudgeModel();
+
+    [ObservableProperty]
+    private JudgeModel thirdJudge = new JudgeModel();
 
     [ObservableProperty]
     private string searchQuery;
@@ -42,27 +60,29 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     private IList<TeamModel> availableTeams = new List<TeamModel>();
 
     [ObservableProperty]
-    private string title;
+    private IList<JudgeModel> availableJudges = new List<JudgeModel>();
 
-    private delegate Task ButtonActionDelegate();
-    private ButtonActionDelegate asyncButtonAction;
+    [ObservableProperty]
+    private string title;
 
     [ObservableProperty]
     private string selectedTeamNames;
 
     [ObservableProperty]
-    private IList<JudgeModel> availableJudges = new List<JudgeModel>();
-
-    [ObservableProperty]
-    private string selectedJudgeNames;
-
-    public ObservableCollection<object> SelectedJudges { get; set; } = [];
+    private double datePickerWidth;
 
     public ObservableCollection<object> SelectedTeams { get; set; } = [];
 
     public ObservableCollection<PointModel> PointsWithTeam { get; set; } = [];
 
     public ObservableCollection<uint> PointValues { get; set; } = [];
+
+    public DateTime MaxDateTime => DateTime.Now;
+
+    private async Task OnAppearingAsync() { }
+    private async Task OnDisappearingAsync() { }
+
+    private async Task OnSubmitAsync() => await asyncButtonAction();
 
     private void TeamSelected()
     {
@@ -87,24 +107,15 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         SelectedTeamNames = string.Join(", ", SelectedTeams.OfType<TeamModel>().Select(t => t.Name.Value));
     }
 
-
     private void JudgeSelected()
     {
-        foreach (var judge in SelectedJudges)
+        if (FirstJudge == SecondJudge || SecondJudge == ThirdJudge || ThirdJudge == FirstJudge)
         {
-            if (judge is JudgeModel selectedJudge)
-            {
-                this.Judges.Add(selectedJudge);
-            }
+            Application.Current.MainPage.DisplayAlert("Wrong Selection", "Same Judges can't be selected", "OK");
+            return;
         }
-
-        SelectedJudgeNames = string.Join(", ", SelectedJudges.OfType<JudgeModel>().Select(j => j.Name.Value));
+        Judges = new List<JudgeModel>(){ FirstJudge, SecondJudge, ThirdJudge };
     }
-
-    public DateTime MaxDateTime => DateTime.Now;
-
-    [ObservableProperty]
-    private double datePickerWidth;
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -116,7 +127,7 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
 
         if (!hasValue)
         {
-            //asyncButtonAction = OnSaveAsync;
+            asyncButtonAction = OnSaveAsync;
             Title = "Create Race";
             return;
         }
@@ -125,13 +136,26 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
 
         this.Id = model.Id;
         this.PublicId = model.PublicId;
-        this.Location.Value.City.Value = selectedCity;
-        this.Location.Value.Street.Value = model.Location.Value.Street.Value;
-        this.Location.Value.HouseNumber.Value = model.Location.Value.HouseNumber.Value;
         this.Teams = model.Teams;
         this.Judges = model.Judges;
+        this.Name.Value = model.Name.Value;
+        this.Date.Value = model.Date.Value;
+        this.Location.Value.City.Value = model.Location.Value.City.Value;
+        this.Location.Value.Id = model.Location.Value.Id;
+        this.Location.Value.Street.Value = model.Location.Value.Street.Value;
+        this.Location.Value.HouseNumber.Value = model.Location.Value.HouseNumber.Value;
+        this.SelectedCity = model.Location.Value.City.Value;
+        this.SearchQuery = $"{SelectedCity.Name} ({SelectedCity.PostalCode})";
+        this.PointsWithTeam = new ObservableCollection<PointModel>(model.Points.Select(p => new PointModel
+        {
+            Team = new ValidatableObject<TeamModel> { Value = p.Team.Value },
+            Value = new ValidatableObject<uint> { Value = p.Value.Value }
+        }));
+        this.FirstJudge = model.Judges.ElementAtOrDefault(0) ?? new JudgeModel();
+        this.SecondJudge = model.Judges.ElementAtOrDefault(1) ?? new JudgeModel();
+        this.ThirdJudge = model.Judges.ElementAtOrDefault(2) ?? new JudgeModel();
 
-        //asyncButtonAction = OnUpdateAsync;
+        asyncButtonAction = OnUpdateAsync;
         Title = "Update Race";
     }
 
@@ -139,24 +163,30 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
     {
         SearchQuery = $"{SelectedCity.Name} ({SelectedCity.PostalCode})";
         SearchedCities.Clear();
+        this.Location = new ValidatableObject<LocationModel>
+        {
+            Value = new LocationModel
+            {
+                City = new ValidatableObject<CityModel> { Value = SelectedCity },
+                Street = new ValidatableObject<string>(),
+                HouseNumber = new ValidatableObject<string>()
+            }
+        };
     }
-
 
     private void SearchCities(string query)
     {
         if (query.Length > 1 && !query.IsNullOrEmpty())
         {
             query.ToLower();
-            SearchedCities = new ObservableCollection<CityModel>(Cities.Where(x => (!query.IsNumeric() && x.Name.ToLower().Contains(query)) || (query.IsNumeric() && x.PostalCode.ToString().Contains(query))));
+            SearchedCities = new ObservableCollection<CityModel>(Cities.Where(x => (!query.IsNumeric() && x.Name.ToLower().Contains(query)) ||
+                                                                                   (query.IsNumeric() && x.PostalCode.ToString().Contains(query))));
         }
         if (query.IsNullOrEmpty())
         {
             SearchedCities.Clear();
         }
     }
-
-    private async Task OnAppearingAsync() { }
-    private async Task OnDisappearingAsync() { }
 
     private async Task LoadCitiesAsync()
     {
@@ -187,8 +217,13 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         this.Name.Validate();
         this.Location.Value.Street.Validate();
         this.Location.Value.HouseNumber.Validate();
+        this.PointsWithTeam.ToList().ForEach(x => x.Value.Validate());
 
-        return this.Name.IsValid && this.Location.Value.Street.IsValid && this.Location.Value.HouseNumber.IsValid;
+
+        return this.Name.IsValid &&
+            this.Location.Value.Street.IsValid &&
+            this.Location.Value.HouseNumber.IsValid &&
+            (FirstJudge != SecondJudge || SecondJudge != ThirdJudge || ThirdJudge != FirstJudge);
     }
 
     private void ClearForm()
@@ -197,5 +232,43 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         this.Location.Value.City.Value = null;
         this.Location.Value.Street.Value = null;
         this.Location.Value.HouseNumber.Value = null;
+        this.Teams.Clear();
+        this.Judges.Clear();
+        this.PointsWithTeam.Clear();
+    }
+
+    public async Task OnSaveAsync()
+    {
+        if (!IsFormValid())
+        {
+            return;
+        }
+
+        var result = await raceService.CreateAsync(this, PointsWithTeam.ToList());
+
+        var message = result.IsError ? result.FirstError.Description : "Judge saved.";
+        var title = result.IsError ? "Error" : "Information";
+
+        if (!result.IsError)
+        {
+            ClearForm();
+        }
+
+        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+    }
+
+    public async Task OnUpdateAsync()
+    {
+        if (!IsFormValid())
+        {
+            return;
+        }
+
+        var result = await raceService.UpdateAsync(this);
+
+        var message = result.IsError ? result.FirstError.Description : "Judge updated.";
+        var title = result.IsError ? "Error" : "Information";
+
+        await Application.Current.MainPage.DisplayAlert(title, message, "OK");
     }
 }

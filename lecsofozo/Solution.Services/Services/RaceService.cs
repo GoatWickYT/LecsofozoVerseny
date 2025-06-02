@@ -4,7 +4,7 @@ public class RaceService(AppDbContext dbContext) : IRaceService
 {
     private int ROW_COUNT = 5;
 
-    public async Task<ErrorOr<RaceModel>> CreateAsync(RaceModel model)
+    public async Task<ErrorOr<RaceModel>> CreateAsync(RaceModel model, List<PointModel> TeamsWithPoints)
     {
         bool exists = dbContext.Races.Any(p => p.Name.ToLower() == model.Name.Value.ToLower() && 
                                                p.Date == model.Date.Value &&
@@ -18,6 +18,9 @@ public class RaceService(AppDbContext dbContext) : IRaceService
         var entity = model.ToEntity();
 
         entity.PublicId = Guid.NewGuid().ToString();
+        entity.Location = model.Location.Value.ToEntity();
+        entity.Judges = dbContext.Judges.Where(j => model.Judges.Select(x => x.PublicId).Contains(j.PublicId)).ToList();
+        entity.Points = TeamsWithPoints.Select(p => p.ToEntity()).ToList();
 
         await dbContext.Races.AddAsync(entity);
         await dbContext.SaveChangesAsync();

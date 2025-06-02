@@ -22,3 +22,4 @@ global using Microsoft.UI.Xaml.Controls;
 global using Solution.ValidationLibrary;
 global using System.Collections.ObjectModel;
 global using CommunityToolkit.Common;
+global using Solution.Database.Entities;

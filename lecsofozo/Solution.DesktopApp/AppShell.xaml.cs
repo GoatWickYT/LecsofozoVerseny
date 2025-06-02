@@ -22,5 +22,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(CreateOrEditJudgeView.Name, typeof(CreateOrEditJudgeView));
         Routing.RegisterRoute(JudgeListView.Name, typeof(JudgeListView));
         Routing.RegisterRoute(CreateOrEditRaceView.Name, typeof(CreateOrEditRaceView));
+        Routing.RegisterRoute(RaceListView.Name, typeof(RaceListView));
     }
 }

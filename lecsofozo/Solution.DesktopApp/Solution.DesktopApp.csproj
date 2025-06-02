@@ -142,6 +142,9 @@
 	  <MauiXaml Update="Views\JudgeListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\RaceListView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\TeamListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

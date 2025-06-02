@@ -140,69 +140,57 @@
             </CollectionView>
         </VerticalStackLayout>
 
-        <ListView ItemsSource="{Binding PointsWithTeam}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:PointModel">
-                    <ViewCell>
-                        <VerticalStackLayout Style="{StaticResource FormLineContainer}" Padding="10">
-                            <Label Text="{Binding Team.Value.Name.Value}" FontAttributes="Bold"/>
-                            <Entry Text="{Binding Value.Value}">
-                                <Entry.Behaviors>
+            <ListView ItemsSource="{Binding PointsWithTeam}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:PointModel">
+                        <ViewCell>
+                            <VerticalStackLayout Style="{StaticResource FormLineContainer}" Padding="10">
+                                <Label Text="{Binding Team.Value.Name.Value}" FontAttributes="Bold"/>
+                                <Entry Text="{Binding Value.Value}">
+                                    <Entry.Behaviors>
                                         <behaviors:EntryIntegerBehavior/>
                                     </Entry.Behaviors>
-                            </Entry>
-                            <Label Text="{Binding Value.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                                </Entry>
+                                <Label Text="{Binding Value.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
                                    Style="{StaticResource ValidationErrorLabelStyle}"/>
-                        </VerticalStackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
-            <BoxView HeightRequest="1" Color="Gray"/>
-            <HorizontalStackLayout Spacing="5">
-                <Label Text="Selected judges:" FontSize="Medium"/>
-                <Label Text="{Binding SelectedJudgeNames}" FontSize="Medium"/>
-            </HorizontalStackLayout>
-            <BoxView HeightRequest="1" Color="Gray"/>
-
-            <CollectionView ItemsSource="{Binding AvailableJudges}"
-                    SelectionMode="Multiple"
-                    SelectedItems="{Binding SelectedJudges}"
-                    SelectionChangedCommand="{Binding JudgeSelectedCommand}"
-                    Margin="10"
-                    HorizontalOptions="Center"
-                    >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:JudgeModel">
-                        <Border
-                    Margin="10"
-                    Padding="10"
-                    StrokeShape="RoundRectangle 10">
-                            <Label x:Name="judgeName" Text="{Binding Name.Value}" FontSize="Medium"/>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup>
-                                    <VisualState Name="Selected">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="Blue"/>
-                                            <Setter TargetName="judgeName" Property="Label.TextColor" Value="White"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="Black"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </Border>
+                            </VerticalStackLayout>
+                        </ViewCell>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
+                </ListView.ItemTemplate>
+            </ListView>
 
-        <VerticalStackLayout Style="{StaticResource FormLineContainer}">
+
+            <Picker Title="Select First Judge"
+                    SelectedItem="{Binding FirstJudge}"
+                    ItemsSource="{Binding AvailableJudges}"
+                    ItemDisplayBinding="{Binding Name.Value}"
+                    Style="{StaticResource InputLabel}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding SelectedJudgeCommand}" />
+                </Picker.Behaviors>
+            </Picker>
+
+            <Picker Title="Select Second Judge"
+                    SelectedItem="{Binding SecondJudge}"
+                    ItemsSource="{Binding AvailableJudges}"
+                    ItemDisplayBinding="{Binding Name.Value}"
+                    Style="{StaticResource InputLabel}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding SelectedJudgeCommand}" />
+                </Picker.Behaviors>
+            </Picker>
+
+            <Picker Title="Select Third Judge"
+                    SelectedItem="{Binding ThirdJudge}"
+                    ItemsSource="{Binding AvailableJudges}"
+                    ItemDisplayBinding="{Binding Name.Value}"
+                    Style="{StaticResource InputLabel}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding SelectedJudgeCommand}" />
+                </Picker.Behaviors>
+            </Picker>
+
+            <VerticalStackLayout Style="{StaticResource FormLineContainer}">
             <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/> 
         </VerticalStackLayout>
 

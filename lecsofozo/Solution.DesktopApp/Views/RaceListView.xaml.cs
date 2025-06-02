@@ -1,12 +1,12 @@
 namespace Solution.DesktopApp.Views;
 
-public partial class TeamListView : ContentPage
+public partial class RaceListView : ContentPage
 {
     public RaceListViewModel ViewModel => this.BindingContext as RaceListViewModel;
 
-    public static string Name => nameof(TeamListView);
+    public static string Name => nameof(RaceListView);
 
-    public TeamListView(RaceListViewModel viewModel)
+    public RaceListView(RaceListViewModel viewModel)
     {
         this.BindingContext = viewModel;
 
