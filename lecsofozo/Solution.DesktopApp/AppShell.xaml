@@ -13,8 +13,8 @@
 
     <Shell.Resources>
         <Style x:Key="ShellContentStyle" TargetType="Element">
-            <Setter Property="Shell.BackgroundColor" Value="#090909" />
-            <Setter Property="Shell.TitleColor" Value="WhiteSmoke" />
+            <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light=White, Dark=Black}"/>
+            <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
             <Setter Property="Shell.Background" Value="Gray" />
         </Style>
     </Shell.Resources>
@@ -28,31 +28,31 @@
             <MenuFlyoutSubItem Text="Team">
                 <MenuFlyoutItem Text="Add New Team" Command="{Binding AddNewTeamCommand}">
                     <MenuFlyoutItem.IconImageSource>
-                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="{AppThemeBinding Light=Black, Dark=White}"/>
                     </MenuFlyoutItem.IconImageSource>
                 </MenuFlyoutItem>
                 <MenuFlyoutItem Text="List Teams" Command="{Binding ListTeamCommand}">
                     <MenuFlyoutItem.IconImageSource>
-                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="{AppThemeBinding Light=Black, Dark=White}"/>
                     </MenuFlyoutItem.IconImageSource>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Judge">
                 <MenuFlyoutItem Text="Add New Judge" Command="{Binding AddNewJudgeCommand}">
                     <MenuFlyoutItem.IconImageSource>
-                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="{AppThemeBinding Light=Black, Dark=White}"/>
                     </MenuFlyoutItem.IconImageSource>
                 </MenuFlyoutItem>
                 <MenuFlyoutItem Text="List Judges" Command="{Binding ListJudgeCommand}">
                     <MenuFlyoutItem.IconImageSource>
-                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="{AppThemeBinding Light=Black, Dark=White}"/>
                     </MenuFlyoutItem.IconImageSource>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
             <MenuFlyoutSubItem Text="Race">
                 <MenuFlyoutItem Text="Add New Race" Command="{Binding AddNewRaceCommand}">
                     <MenuFlyoutItem.IconImageSource>
-                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="Black"/>
+                        <FontImageSource Glyph="&#x25B6;" FontFamily="Arial" Color="{AppThemeBinding Light=Black, Dark=White}"/>
                     </MenuFlyoutItem.IconImageSource>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>

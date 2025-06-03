@@ -21,7 +21,7 @@
 
         <Label Text="JUDGES"
                Grid.Row="0"
-               Style="{StaticResource PageTitle}"/>
+               Style="{StaticResource PageTitle}" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
         <ScrollView Grid.Row="1">
             <CollectionView ItemsSource="{Binding Judges}"

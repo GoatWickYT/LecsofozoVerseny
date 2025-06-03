@@ -6,7 +6,7 @@
              x:Class="Solution.DesktopApp.Views.MainView">
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="Lecso Data Base" Style="{StaticResource PageTitle}" />
+        <Label Text="Lecso Data Base" Style="{StaticResource PageTitle}" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
         <Image Source="lecso.jpg" Aspect="AspectFit" Margin="100"/>
     </Grid>
 

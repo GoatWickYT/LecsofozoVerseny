@@ -91,7 +91,7 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Style="{StaticResource FormLineContainer}" Grid.Row="4" Grid.Column="0">
-                    <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250"/>
+                    <Button Text="Submit" Command="{Binding SubmitCommand}" WidthRequest="250" BackgroundColor="Green" TextColor="White" FontAttributes="Bold"/>
                 </VerticalStackLayout>
 
         </Grid>

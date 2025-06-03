@@ -39,12 +39,15 @@
                     VerticalOptions="FillAndExpand">
                 <Image Source="{Binding Participant.Image, Source={x:Reference this}}"/>
             </Border>
-            <Button Text="Plese select an image"
+            <Button Text="Please select an image!"
                     Margin="0,5"
                     Command="{Binding ImageSelectCommand, Source={x:Reference this}}"
                     CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
             <Button Text="Delete participant"
                     Margin="0,5"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    FontAttributes="Bold"
                     Command="{Binding DeleteCommand, Source={x:Reference this}}"
                     CommandParameter="{Binding Participant.PublicId, Source={x:Reference this}}"/>
         </StackLayout>
