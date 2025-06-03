@@ -22,7 +22,7 @@
 
         <Label Text="TEAMS"
            Grid.Row="0"
-           Style="{StaticResource PageTitle}"/>
+           Style="{StaticResource PageTitle}" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
         <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center">
             <Label Text="{Binding SelectedTeam.Name.Value}"

@@ -25,7 +25,7 @@
 
     <ScrollView>
         <StackLayout>
-            <Label Text="{Binding Title}" Style="{StaticResource PageTitle}"/>
+            <Label Text="{Binding Title}" Style="{StaticResource PageTitle}" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
             <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
                 <Label Text="Name" Style="{StaticResource InputLabel}" />
@@ -38,7 +38,7 @@
                     Style="{StaticResource ValidationErrorLabelStyle}" />
             </VerticalStackLayout>
 
-            <Border Stroke="Gray" StrokeThickness="2" Padding="20" WidthRequest="550">
+            <Border Stroke="LightGray" StrokeThickness="2" Padding="20" WidthRequest="550">
                 <VerticalStackLayout Style="{StaticResource FormLineContainer}" HorizontalOptions="Center">
                     <ScrollView Grid.Row="1">
                         <CollectionView ItemsSource="{Binding Participants}"
@@ -61,7 +61,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Button Text="Save" WidthRequest="200" Command="{Binding SubmitCommand}"/>
+            <Button Text="Save" WidthRequest="200" Command="{Binding SubmitCommand}" BackgroundColor="Green" TextColor="White" FontAttributes="Bold" Margin="15"/>
         </StackLayout>
     </ScrollView>
 
