@@ -92,10 +92,12 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         }
 
         PointsWithTeam.Clear();
+        this.Teams.Clear();
         foreach (TeamModel team in SelectedTeams)
         {
             if (team is TeamModel selectedTeam)
             {
+                this.Teams.Add(selectedTeam);
                 PointsWithTeam.Add(new PointModel
                 {
                     Team = new ValidatableObject<TeamModel> { Value = team },
@@ -243,7 +245,7 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         {
             return;
         }
-
+        
         var result = await raceService.CreateAsync(this, PointsWithTeam.ToList());
 
         var message = result.IsError ? result.FirstError.Description : "Judge saved.";

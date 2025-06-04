@@ -19,7 +19,7 @@ public class LocationModel
         AddValidators();
     }
 
-    public LocationModel(LocationEntity entity)
+    public LocationModel(LocationEntity entity): this()
     {
         this.Id = entity.Id;
         this.Street.Value = entity.Street;

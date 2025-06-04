@@ -19,7 +19,7 @@ public class PointModel
         AddValidators();
     }
 
-    public PointModel(PointEntity entity)
+    public PointModel(PointEntity entity): this()
     { 
         this.Value.Value = entity.Value;
         this.Team.Value = new TeamModel(entity.Team);

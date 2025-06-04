@@ -39,12 +39,20 @@ public class RaceService(AppDbContext dbContext) : IRaceService
 
     public async Task<ErrorOr<List<RaceModel>>> GetAllAsync() =>
         await dbContext.Races.AsNoTracking()
-                              .Select(p => new RaceModel(p))
-                              .ToListAsync();
+                             .Include(p => p.Location)
+                             .Include(p => p.Teams) 
+                             .Include(p => p.Points)
+                             .Include(p => p.Judges)
+                             .Select(p => new RaceModel(p))
+                             .ToListAsync();
 
     public async Task<ErrorOr<RaceModel>> GetByIdAsync(string id)
     {
         var entity = await dbContext.Races.AsNoTracking()
+                                          .Include(p => p.Location)
+                                          .Include(p => p.Teams)
+                                          .Include(p => p.Points)
+                                          .Include(p => p.Judges)
                                           .FirstOrDefaultAsync(p => p.PublicId == id);
 
         return entity is null ? Error.NotFound() : new RaceModel(entity);

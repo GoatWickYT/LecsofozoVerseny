@@ -45,12 +45,17 @@
             <Label>
                 <Label.Text>
                     <MultiBinding StringFormat="{}{0}, {1} {2}.">
-                        <Binding Path="Location.Value.City"/>
-                        <Binding Path="Location.Value.Street"/>
-                        <Binding Path="Location.Value.HouseNumber"/>
+                        <Binding Path="Location.Value.City.Value"/>
+                        <Binding Path="Location.Value.Street.Value"/>
+                        <Binding Path="Location.Value.HouseNumber.Value"/>
                     </MultiBinding>
                 </Label.Text>
             </Label>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Grid.Row="4">
+            <Label Text="{Binding SelectedRace.Judges[0].Name.Value}"/>
+            <Label Text="{Binding SelectedRace.Judges[1].Name.Value}"/>
+            <Label Text="{Binding SelectedRace.Judges[2].Name.Value}"/>
         </HorizontalStackLayout>
         <ScrollView Grid.Row="3">
             <CollectionView ItemsSource="{Binding SelectedRace.Teams}"
@@ -62,24 +67,16 @@
                                 <ColumnDefinition Width="4*" />
                                 <ColumnDefinition Width="4*" />
                             </Grid.ColumnDefinitions>
-                            <Label Text="Image"
-                                   Grid.Column="0"
-                                   HorizontalTextAlignment="Center"/>
-                            <Label Text="Name"
+                            <Label Text="Name.Value"
                                    Grid.Column="1"
                                    HorizontalTextAlignment="Center"/>
                         </Grid>
                     </Border>
                 </CollectionView.Header>
+
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
                 </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ParticipantModel">
-                        <components:ParticipantListComponent Participant="{Binding .}"
-                                                    CommandParameter="{Binding PublicId}"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
                 <CollectionView.Footer>
                     <FlexLayout AlignContent="SpaceEvenly" 
                         Direction="Row"
@@ -114,10 +111,5 @@
                 </CollectionView.Footer>
             </CollectionView>
         </ScrollView>
-        <HorizontalStackLayout Grid.Row="4">
-            <Label Text="{Binding SelectedRace.Judges[0]}"/>
-            <Label Text="{Binding SelectedRace.Judges[1]}"/>
-            <Label Text="{Binding SelectedRace.Judges[2]}"/>
-        </HorizontalStackLayout>
     </Grid>
 </ContentPage>

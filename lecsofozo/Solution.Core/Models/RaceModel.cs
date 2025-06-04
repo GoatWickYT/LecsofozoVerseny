@@ -30,7 +30,7 @@ public class RaceModel
         AddValidators();
     }
 
-    public RaceModel(RaceEntity entity)
+    public RaceModel(RaceEntity entity) : this()
     {
         this.Id = entity.Id;
         this.PublicId = entity.PublicId;
