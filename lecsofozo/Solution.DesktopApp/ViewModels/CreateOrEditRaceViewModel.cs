@@ -245,10 +245,10 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
         {
             return;
         }
-        
+
         var result = await raceService.CreateAsync(this, PointsWithTeam.ToList());
 
-        var message = result.IsError ? result.FirstError.Description : "Judge saved.";
+        var message = result.IsError ? result.FirstError.Description : "Race saved.";
         var title = result.IsError ? "Error" : "Information";
 
         if (!result.IsError)
@@ -268,7 +268,7 @@ public partial class CreateOrEditRaceViewModel(AppDbContext appDbContext,
 
         var result = await raceService.UpdateAsync(this);
 
-        var message = result.IsError ? result.FirstError.Description : "Judge updated.";
+        var message = result.IsError ? result.FirstError.Description : "Race updated.";
         var title = result.IsError ? "Error" : "Information";
 
         await Application.Current.MainPage.DisplayAlert(title, message, "OK");

@@ -1,4 +1,7 @@
-﻿namespace Solution.Services.Services;
+﻿using Solution.Database.Entities;
+using Solution.ValidationLibrary;
+
+namespace Solution.Services.Services;
 
 public class RaceService(AppDbContext dbContext) : IRaceService
 {
@@ -19,8 +22,17 @@ public class RaceService(AppDbContext dbContext) : IRaceService
 
         entity.PublicId = Guid.NewGuid().ToString();
         entity.Location = model.Location.Value.ToEntity();
+        entity.Location.HouseNumber = model.Location.Value.HouseNumber.Value;
+        entity.Location.Street = model.Location.Value.Street.Value;
+        entity.Location.City = dbContext.Cities.FirstOrDefault(x => x.Id == model.Location.Value.City.Value.Id);
+        entity.Points = new List<PointEntity>(TeamsWithPoints.Select(p => new PointEntity
+        {
+            Value = p.Value.Value,
+            TeamId = dbContext.Teams.FirstOrDefault(t => t.PublicId == p.Team.Value.PublicId)?.Id ?? 0,
+            RaceId = entity.Id
+        }));
+        entity.Teams = dbContext.Teams.Where(t => model.Teams.Select(x => x.PublicId).Contains(t.PublicId)).ToList();
         entity.Judges = dbContext.Judges.Where(j => model.Judges.Select(x => x.PublicId).Contains(j.PublicId)).ToList();
-        entity.Points = TeamsWithPoints.Select(p => p.ToEntity()).ToList();
 
         await dbContext.Races.AddAsync(entity);
         await dbContext.SaveChangesAsync();
@@ -40,8 +52,8 @@ public class RaceService(AppDbContext dbContext) : IRaceService
     public async Task<ErrorOr<List<RaceModel>>> GetAllAsync() =>
         await dbContext.Races.AsNoTracking()
                              .Include(p => p.Location)
-                             .Include(p => p.Teams) 
-                             .Include(p => p.Points)
+                             .Include(p => p.Points).ThenInclude(p => p.Team)
+                             .Include(p => p.Teams)
                              .Include(p => p.Judges)
                              .Select(p => new RaceModel(p))
                              .ToListAsync();

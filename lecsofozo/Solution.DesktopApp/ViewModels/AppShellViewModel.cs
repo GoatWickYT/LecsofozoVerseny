@@ -25,6 +25,13 @@ public partial class AppShellViewModel
         await Shell.Current.GoToAsync(CreateOrEditTeamView.Name);
     }
 
+    private async Task OnListTeamAsync()
+    {
+        Shell.Current.ClearNavigationStack();
+        await Shell.Current.GoToAsync(TeamListView.Name);
+    }
+
+
     private async Task OnAddNewJudgeAsync()    {
         Shell.Current.ClearNavigationStack();
         await Shell.Current.GoToAsync(CreateOrEditJudgeView.Name);
@@ -36,11 +43,6 @@ public partial class AppShellViewModel
         await Shell.Current.GoToAsync(JudgeListView.Name);
     }
 
-    private async Task OnListTeamAsync()
-    {
-        Shell.Current.ClearNavigationStack();
-        await Shell.Current.GoToAsync(TeamListView.Name);
-    }
 
     private async Task OnAddNewRaceAsync()
     {

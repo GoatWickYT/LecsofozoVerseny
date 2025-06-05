@@ -14,7 +14,6 @@ public class PointModel
     {
         Value = new ValidatableObject<uint>();
         Team = new ValidatableObject<TeamModel>();
-        Race = new ValidatableObject<RaceModel>();
 
         AddValidators();
     }
@@ -23,7 +22,6 @@ public class PointModel
     { 
         this.Value.Value = entity.Value;
         this.Team.Value = new TeamModel(entity.Team);
-        this.Race.Value = new RaceModel(entity.Race);
     }
 
     public PointEntity ToEntity()

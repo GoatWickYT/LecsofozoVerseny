@@ -2,7 +2,7 @@
 
 public class MaxDateRule<T>(DateTime maxDate) : IValidationRule<T>
 {
-    public string ValidationMessage { get; set; } = $"Value can't be larger then {maxDate}.";
+    public string ValidationMessage { get; set; } = $"Value can't be larger then {maxDate.Date}.";
 
     public bool Check(object value)
     {
